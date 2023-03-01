@@ -1,3 +1,5 @@
+import PDFDocument from "pdfkit";
+
 module.exports = function(app, container) {
     const logger = container.get('logger');
 
@@ -13,9 +15,12 @@ module.exports = function(app, container) {
      *        properties:
      *          size:
      *            type: string
+     *            default: 'cr80'
      *            description: The card size (eg. cr80).
      *          orientation:
      *            type: string
+     *            enum: ['landscape', 'portrait']
+     *            default: 'landscape'
      *            description: The card orientation (landscape or portrait).
      *      Template:
      *        type: object
@@ -39,7 +44,7 @@ module.exports = function(app, container) {
      *                  $ref: '#/components/schemas/Layout'
      *                template:
      *                  $ref: '#/components/schemas/Template'
-     *                fields:
+     *                data:
      *                  type: array
      *                  items:
      *                    type: object
@@ -54,15 +59,29 @@ module.exports = function(app, container) {
      *                          - type: string
      *                          - type: integer
      *                          - type: boolean
+     *                format:
+     *                  type: string
+     *                  enum: ['png', 'pdf']
+     *                  default: 'png'
      *     responses:
      *       200:
      *         description: Returns the image.
      */
     app.post('/render/image', (req, res) => {
-        container.get('render').generateImage(req.body.layout, req.body.template, req.body.fields).then(bmp => {
-            console.log("Bitmap generated!");
-            res.writeHead(200, [['Content-Type', 'image/png']]);
-            res.end(Buffer.from(bmp, 'binary'));
+        container.get('render').generateImage(req.body.layout, req.body.template, req.body.data).then(img => {
+            if (req.body.format === 'pdf') {
+                const doc = new PDFDocument({autoFirstPage:false});
+                res.setHeader('Content-disposition', 'attachment; filename="cardtemplate.pdf"')
+                res.setHeader('Content-Type', 'application/pdf');
+                let kimg = doc.openImage(img);
+                doc.addPage({size: [kimg.width, kimg.height]});
+                doc.image(kimg, 0, 0);
+                doc.pipe(res);
+                doc.end();
+            } else {
+                res.setHeader('Content-Type', 'image/png');
+                res.end(Buffer.from(img, 'binary'));
+            }
         }).catch((error) => {
             logger.error(error);
             res.status(500);
