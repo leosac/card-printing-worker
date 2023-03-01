@@ -14,7 +14,6 @@ app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use(logger.middleware);
 
-
 const swaggerOptions = {
     definition: {
         openapi: "3.0.0",
