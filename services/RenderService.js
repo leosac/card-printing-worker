@@ -16,10 +16,6 @@ export default class RenderService {
         return Buffer.from(new Uint8Array(array));
     }
 
-    setDataToTemplate(tpl, data) {
-
-    }
-
     async generateImage(layout, tpl, data) {
         const app = new PIXI.Application();
         const cr = new CardRenderer({
@@ -36,11 +32,8 @@ export default class RenderService {
             };
         }
 
-        // We are going to override template's fields values, make a copy first
-        const ctpl = JSON.parse(JSON.stringify(tpl));
-        this.setDataToTemplate(ctpl, data);
-
-        await cr.createCardStage(layout.size, layout.orientation, ctpl);
+        await cr.createCardStage(layout, tpl);
+        await cr.setCardData(data);
         cr.animate();
 
         const base64img = app.renderer.extract.canvas(app.stage).toDataURL('image/png');

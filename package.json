@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/leosac/card-printing-worker#readme",
   "dependencies": {
-    "@leosac/cardrendering": "^1.3.1",
+    "@leosac/cardrendering": "^1.5.0",
     "@pixi/node": "^7.1.3",
     "body-parser": "^1.20.2",
     "cabin": "^13.0.1",

@@ -45,20 +45,7 @@ module.exports = function(app, container) {
      *                template:
      *                  $ref: '#/components/schemas/Template'
      *                data:
-     *                  type: array
-     *                  items:
-     *                    type: object
-     *                    required:
-     *                      - name
-     *                      - value
-     *                    properties:
-     *                      name:
-     *                        type: string
-     *                      value:
-     *                        oneOf:
-     *                          - type: string
-     *                          - type: integer
-     *                          - type: boolean
+     *                  type: object
      *                format:
      *                  type: string
      *                  enum: ['png', 'pdf']
