@@ -16,7 +16,16 @@ export default class RenderService {
         return Buffer.from(new Uint8Array(array));
     }
 
-    async generateImage(layout, tpl, data) {
+    async generateImages(tpl, data) {
+        const images = [];
+        await Promise.all(Object.keys(tpl.sides).map(async side => {
+            const image = await this.generateImage(tpl.layout, tpl.sides[side], data);
+            images.push(image);
+        }));
+        return images;
+    }
+
+    async generateImage(layout, sidetpl, data) {
         const app = new PIXI.Application();
         const cr = new CardRenderer({
             renderer: app.renderer,
@@ -32,7 +41,7 @@ export default class RenderService {
             };
         }
 
-        await cr.createCardStage(layout, tpl);
+        await cr.createCardStage(layout, sidetpl);
         await cr.setCardData(data);
         cr.animate();
 

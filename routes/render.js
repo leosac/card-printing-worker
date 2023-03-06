@@ -2,6 +2,7 @@ import PDFDocument from "pdfkit";
 
 module.exports = function(app, container) {
     const logger = container.get('logger');
+    const repository = container.get('repository');
 
     /**
      * @openapi
@@ -22,41 +23,22 @@ module.exports = function(app, container) {
      *            enum: ['landscape', 'portrait']
      *            default: 'landscape'
      *            description: The card orientation (landscape or portrait).
-     *      Template:
+     *      Sides:
+     *        type: object
+     *        properties:
+     *          front:
+     *            $ref: '#/components/schemas/SideTemplate'
+     *          back:
+     *            $ref: '#/components/schemas/SideTemplate'
+     *        additionalProperties:
+     *          $ref: '#/components/schemas/SideTemplate'
+     *      SideTemplate:
      *        type: object
      */
 
-    /**
-     * @openapi
-     * /render/image:
-     *   post:
-     *     description: Generate an image from a template and associated fields.
-     *     requestBody:
-     *        required: true
-     *        content:
-     *          application/json:
-     *            schema:
-     *              type: object
-     *              required:
-     *                - template
-     *              properties:
-     *                layout:
-     *                  $ref: '#/components/schemas/Layout'
-     *                template:
-     *                  $ref: '#/components/schemas/Template'
-     *                data:
-     *                  type: object
-     *                format:
-     *                  type: string
-     *                  enum: ['png', 'pdf']
-     *                  default: 'png'
-     *     responses:
-     *       200:
-     *         description: Returns the image.
-     */
-    app.post('/render/image', (req, res) => {
-        container.get('render').generateImage(req.body.layout, req.body.template, req.body.data).then(img => {
-            if (req.body.format === 'pdf') {
+    async function generateOutput(layout, tpl, data, format, res) {
+        const img = await container.get('render').generateImage(layout, tpl, data);
+            if (format === 'pdf') {
                 const doc = new PDFDocument({autoFirstPage:false});
                 res.setHeader('Content-disposition', 'attachment; filename="cardtemplate.pdf"')
                 res.setHeader('Content-Type', 'application/pdf');
@@ -69,10 +51,111 @@ module.exports = function(app, container) {
                 res.setHeader('Content-Type', 'image/png');
                 res.end(Buffer.from(img, 'binary'));
             }
-        }).catch((error) => {
+    }
+
+    function getCardSideTemplate(req, sides) {
+        if (req.query.side) {
+            return sides[req.query.side];
+        }
+        if (sides.front) {
+            return sides.front;
+        }
+        return sides.back;
+    }
+
+    /**
+     * @openapi
+     * /render/image:
+     *   post:
+     *     description: Generate an image from a template and associated fields.
+     *     requestBody:
+     *        required: true
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
+     *              properties:
+     *                layout:
+     *                  $ref: '#/components/schemas/Layout'
+     *                sides:
+     *                  $ref: '#/components/schemas/Sides'
+     *                template:
+     *                  $ref: '#/components/schemas/SideTemplate'
+     *                data:
+     *                  type: object
+     *                format:
+     *                  type: string
+     *                  enum: ['png', 'pdf']
+     *                  default: 'png'
+     *     responses:
+     *       200:
+     *         description: Returns the image.
+     */
+    app.post('/render/image', async (req, res) => {
+        try {
+            let tpl;
+            if (req.body.template) {
+                tpl = req.body.template;
+            } else if (req.body.sides) {
+                tpl = getCardSideTemplate(req, req.body.sides);
+            }
+            if (!tpl) {
+                throw new Error("No card side template to use.");
+            }
+
+            await generateOutput(req.body.layout, tpl, req.body.data, req.body.format, res);
+        } catch(error) {
             logger.error(error);
             res.status(500);
-            res.json(error);  
-        });
+            res.json(error); 
+        }
+    });
+
+    /**
+     * @openapi
+     * /render/image/:templateName:
+     *   post:
+     *     description: Generate an image from a template loaded from repository and associated fields.
+     *     parameters:
+     *       - in: path
+     *         name: templateName
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The card template name
+     *     requestBody:
+     *        required: true
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
+     *              properties:
+     *                data:
+     *                  type: object
+     *                format:
+     *                  type: string
+     *                  enum: ['png', 'pdf']
+     *                  default: 'png'
+     *     responses:
+     *       200:
+     *         description: Returns the image.
+     */
+    app.post('/render/image/:templateName', async (req, res) => {
+        try {
+            const cardtpl = repository.get(req.params.templateName);
+            if (!cardtpl) {
+                throw new Error("Cannot found the card template from repository.");
+            }
+            const tpl = getCardSideTemplate(req, cardtpl.sides);
+            if (!tpl) {
+                throw new Error("No card side template to use.");
+            }
+
+            await generateOutput(cardtpl.layout, tpl, req.body.data, req.body.format, res);
+        } catch(error) {
+            logger.error(error);
+            res.status(500);
+            res.json(error); 
+        }
     });
 }
