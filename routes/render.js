@@ -113,7 +113,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /render/image/:templateName:
+     * /render/image/{templateName}:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
      *     parameters:

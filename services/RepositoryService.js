@@ -9,20 +9,29 @@ export default class RepositoryService {
         this.load();
     }
 
-    async load() {
-        this.templates = [];
-        const fullpath = path.join(__dirname, 'repository');
-
-        if (fs.existsSync(fullpath)) {
-            const files = await fs.promises.readdir(fullpath);
-            return Promise.all(files.map(async file => {
-                const fullfile = path.join(fullpath, file);
-                const json = await fs.promises.readFile(fullfile, { encoding: 'utf8' });
-                const tpl = JSON.parse(json);
-                this.templates.push(tpl);
-            }));
+    static getTemplates(folder) {
+        const templates = [];
+        if (fs.existsSync(folder)) {
+            const files = fs.readdirSync(folder);
+            files.forEach(file => {
+                if (path.extname(file).toLowerCase() === ".json") {
+                    const fullfile = path.join(folder, file);
+                    const json = fs.readFileSync(fullfile, { encoding: 'utf8' });
+                    const tpl = JSON.parse(json);
+                    templates.push(tpl);
+                }
+            });
         } else {
-            this.logger.warn("The repository folder doesn't exist.");
+            throw new Error("The repository folder `" + folder + "` doesn't exist.");
+        }
+        return templates;
+    }
+
+    load() {
+        try {
+            this.templates = RepositoryService.getTemplates(process.env.TEMPLATE_REPOSITORY);
+        } catch(error) {
+            this.logger.error(error);
         }
     }
 

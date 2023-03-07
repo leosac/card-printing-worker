@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const Cabin = require('cabin');
+const path = require('path');
 
 const app = express();
 const logger = new Cabin();
@@ -13,6 +14,10 @@ app.use(morgan('tiny'));
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use(logger.middleware);
+
+if (!process.env.TEMPLATE_REPOSITORY) {
+    process.env.TEMPLATE_REPOSITORY = path.join(__dirname, 'repository');
+}
 
 const swaggerOptions = {
     definition: {
@@ -43,14 +48,11 @@ const swaggerOptions = {
   
 const specs = swaggerJsdoc(swaggerOptions);
 app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(specs, { explorer: true })
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs, { explorer: true })
 );
 
 require('./routes')(app, logger);
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-    console.log(`listening on ${port}`);
-});
+module.exports = app;
