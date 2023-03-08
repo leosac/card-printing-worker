@@ -1,6 +1,6 @@
-const app = require('../app.js');
 const supertest = require('supertest');
-import RepositoryService from '../services/RepositoryService';
+const app = require('../src/app');
+const RepositoryService = require('../src/services/RepositoryService');
 
 describe('Render Endpoint', () => {
     const templates = RepositoryService.getTemplates(process.env.TEMPLATE_REPOSITORY);
