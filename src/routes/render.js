@@ -1,4 +1,4 @@
-import PDFDocument from "pdfkit";
+const PDFDocument = require('pdfkit');
 
 module.exports = function(app, container) {
     const logger = container.get('logger');
@@ -113,7 +113,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /render/image/{templateName}:
+     * /template/{templateName}/render/image:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
      *     parameters:
@@ -140,7 +140,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/render/image/:templateName', async (req, res) => {
+    app.post('/template/:templateName/render/image', async (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateName);
             if (!cardtpl) {
@@ -157,5 +157,25 @@ module.exports = function(app, container) {
             res.status(500);
             res.json(error); 
         }
+    });
+
+    /**
+     * @openapi
+     * /templates:
+     *   get:
+     *     description: Get the list of permanent templates on the repository.
+     *     responses:
+     *       '200':
+     *         description: List of templates
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: string
+     */
+    app.get('/templates', (req, res) => {
+        const templates = repository.getAll();
+        res.json(templates);
     });
 }

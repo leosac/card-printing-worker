@@ -1,15 +1,23 @@
 # syntax=docker/dockerfile:1
 
-FROM node:18-alpine
+FROM node:18-bullseye-slim AS base
 ENV NODE_ENV=production
 ENV TEMPLATE_REPOSITORY=/data/repository
 VOLUME $TEMPLATE_REPOSITORY
 WORKDIR /app
+COPY ["package.json", "yarn.lock*", "./"]
+RUN apt update && apt install -y \
+    libpango1.0-0 \
+    xvfb \
+    libgl1-mesa-dri libglapi-mesa libosmesa6 mesa-utils
 
-COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install --production
+FROM base AS dev
+RUN yarn install --pure-lockfile --production
 COPY . .
 
+FROM base AS release
+COPY --from=dev /app/node_modules ./node_modules
+COPY --from=dev /app/src ./src
+COPY --from=dev /app/package.json ./
 EXPOSE 4000
-
-CMD [ "node", "run.js" ]
+CMD [ "xvfb-run", "--auto-servernum", "node", "src/run.js" ]

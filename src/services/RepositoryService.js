@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-export default class RepositoryService {
+class RepositoryService {
     constructor(container) {
         this.container = container;
         this.logger = container.get('logger');
@@ -43,4 +43,10 @@ export default class RepositoryService {
             return undefined;
         }
     }
+
+    getAll() {
+        return this.templates.map(t => t.name);
+    }
 }
+
+module.exports = RepositoryService;

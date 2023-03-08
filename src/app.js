@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(logger.middleware);
 
 if (!process.env.TEMPLATE_REPOSITORY) {
-    process.env.TEMPLATE_REPOSITORY = path.join(__dirname, 'repository');
+    process.env.TEMPLATE_REPOSITORY = path.join(__dirname, '../repository');
 }
 
 const swaggerOptions = {
@@ -43,7 +43,7 @@ const swaggerOptions = {
             }
         ],
     },
-    apis: ["./routes/*.js"],
+    apis: ["./src/routes/*.js"],
 };
   
 const specs = swaggerJsdoc(swaggerOptions);

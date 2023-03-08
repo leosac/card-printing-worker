@@ -1,5 +1,5 @@
-import RepositoryService from './services/RepositoryService';
-import RenderService from './services/RenderService';
+const RepositoryService = require('./services/RepositoryService');
+const RenderService = require('./services/RenderService');
 
 const Cabin = require('cabin');
 const logger = new Cabin();

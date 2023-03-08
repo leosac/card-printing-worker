@@ -1,7 +1,7 @@
-import * as PIXI from "@pixi/node";
-import { CardRenderer } from "@leosac/cardrendering";
+const PIXI = require('@pixi/node');
+const CardRenderer = require('@leosac/cardrendering').CardRenderer;
 
-export default class RenderService {
+class RenderService {
     constructor(container) {
         this.container = container;
         this.logger = container.get('logger');
@@ -26,6 +26,8 @@ export default class RenderService {
     }
 
     async generateImage(layout, sidetpl, data) {
+        this.logger.info("Generating image...");
+
         const app = new PIXI.Application();
         const cr = new CardRenderer({
             renderer: app.renderer,
@@ -49,3 +51,5 @@ export default class RenderService {
         return this.dataURItoBlob(base64img);
     }
 }
+
+module.exports = RenderService;
