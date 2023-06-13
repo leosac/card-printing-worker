@@ -32,12 +32,15 @@
     "cabin": "^13.0.1",
     "canvas": "^2.11.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "pdfkit": "^0.13.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "jest": "^29.5.0",

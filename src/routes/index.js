@@ -16,5 +16,7 @@ module.exports = function(app, logger) {
         });
     });
 
+    require('./auth')(app, Container);
     require('./render')(app, Container);
+    require('./templates')(app, Container);
 }

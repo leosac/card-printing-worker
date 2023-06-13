@@ -42,6 +42,16 @@ const swaggerOptions = {
                 description: "Development Server"
             }
         ],
+        components: {
+            securitySchemes: {
+                Authorization: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                    value: "Bearer <JWT token here>"
+                }
+            }
+        }
     },
     apis: ["./src/routes/*.js"],
 };

@@ -2,7 +2,9 @@ const PDFDocument = require('pdfkit');
 
 module.exports = function(app, container) {
     const logger = container.get('logger');
+    const auth = container.get('auth');
     const repository = container.get('repository');
+    const queue = container.get('queue');
 
     /**
      * @openapi
@@ -65,7 +67,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /render/image:
+     * /render:
      *   post:
      *     description: Generate an image from a template and associated fields.
      *     requestBody:
@@ -91,7 +93,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/render/image', async (req, res) => {
+    app.post('/render', auth.authenticateToken, async (req, res) => {
         try {
             let tpl;
             if (req.body.template) {
@@ -113,16 +115,16 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /template/{templateName}/render/image:
+     * /template/{templateId}/render:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
      *     parameters:
      *       - in: path
-     *         name: templateName
+     *         name: templateId
      *         schema:
      *           type: string
      *         required: true
-     *         description: The card template name
+     *         description: The card template id
      *     requestBody:
      *        required: true
      *        content:
@@ -140,9 +142,9 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/template/:templateName/render/image', async (req, res) => {
+    app.post('/template/:templateId/render', auth.authenticateToken, async (req, res) => {
         try {
-            const cardtpl = repository.get(req.params.templateName);
+            const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
                 throw new Error("Cannot found the card template from repository.");
             }
@@ -161,21 +163,46 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /templates:
-     *   get:
-     *     description: Get the list of permanent templates on the repository.
+     * /template/{templateId}/queue/{itemId}/render:
+     *   post:
+     *     description: Generate an image from a template loaded from repository and from an item on the queue.
+     *     parameters:
+     *       - in: path
+     *         name: templateId
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The card template id
+     *       - in: path
+     *         name: itemId
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The item id
      *     responses:
-     *       '200':
-     *         description: List of templates
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 type: string
+     *       200:
+     *         description: Returns the image.
      */
-    app.get('/templates', (req, res) => {
-        const templates = repository.getAll();
-        res.json(templates);
+    app.post('/template/:templateId/queue/:itemId/render', auth.authenticateToken, async (req, res) => {
+        try {
+            const cardtpl = repository.get(req.params.templateId);
+            if (!cardtpl) {
+                throw new Error("Cannot found the card template from repository.");
+            }
+            const tpl = getCardSideTemplate(req, cardtpl.sides);
+            if (!tpl) {
+                throw new Error("No card side template to use.");
+            }
+            const item = queue.get(req.params.templateId, req.params.itemId);
+            if (!item) {
+                throw new Error("Cannot found the item on the queue.");
+            }
+
+            await generateOutput(cardtpl.layout, tpl, item.data, item.format, res);
+        } catch(error) {
+            logger.error(error);
+            res.status(500);
+            res.json(error); 
+        }
     });
 }
