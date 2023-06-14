@@ -16,7 +16,7 @@ class RepositoryService {
     }
 
     static getTemplates(folder) {
-        const templates = {};
+        const templates = [];
         if (fs.existsSync(folder)) {
             const files = fs.readdirSync(folder);
             files.forEach(file => {
@@ -25,7 +25,7 @@ class RepositoryService {
                     const fullfile = path.join(folder, file);
                     const json = fs.readFileSync(fullfile, { encoding: 'utf8' });
                     const tpl = JSON.parse(json);
-                    templates[fpath.name.toLowerCase()] = tpl;
+                    templates.push({ id: fpath.name.toLowerCase(), content: tpl });
                 }
             });
         } else {
@@ -39,7 +39,7 @@ class RepositoryService {
             if (this.folder !== undefined) {
                 this.templates = RepositoryService.getTemplates(this.folder);
             } else {
-                this.templates = {};
+                this.templates = [];
             }
         } catch(error) {
             this.logger.error(error);
@@ -56,17 +56,21 @@ class RepositoryService {
                 throw new Error("The repository folder `" + folder + "` doesn't exist.");
             }
         }
-        this.templates[templateId.toLowerCase()] = template;
+        this.templates.push({ id: templateId.toLowerCase(), content: template});
         return templateId;
     }
 
     get(templateId) {
-        if (this.templates && this.templates[templateId.toLowerCase()] !== undefined) {
-            return this.templates[templateId.toLowerCase()];
+        if (this.templates && this.templates.length > 0) {
+            const tpl = this.templates.find(t => t.id == templateId.toLowerCase());
+            if (tpl !== undefined) {
+                return tpl.content;
+            }
         } else {
             this.logger.error("The template list is not initialized or empty.");
-            return undefined;
         }
+
+        return undefined;
     }
 
     getFields(templateId) {
@@ -97,8 +101,8 @@ class RepositoryService {
         return type;
     }
 
-    getAll() {
-        return Object.keys(this.templates);
+    getAllIds() {
+        return this.templates.map(t => t.id);
     }
 }
 

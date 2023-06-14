@@ -6,6 +6,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const Cabin = require('cabin');
 const path = require('path');
+const canvas = require('canvas');
 
 const app = express();
 const logger = new Cabin();
@@ -14,6 +15,8 @@ app.use(morgan('tiny'));
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use(logger.middleware);
+
+global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
 
 if (!process.env.TEMPLATE_REPOSITORY) {
     process.env.TEMPLATE_REPOSITORY = path.join(__dirname, '../repository');

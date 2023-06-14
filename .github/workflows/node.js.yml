@@ -26,5 +26,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: yarn install --frozen-lockfile
+    - run: yarn install # --frozen-lockfile, when issue with package manager will be resolved
     - run: xvfb-run --auto-servernum yarn test

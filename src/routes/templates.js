@@ -49,7 +49,7 @@ module.exports = function(app, container) {
      *                 type: string
      */
     app.get('/templates', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
-        const templates = repository.getAll();
+        const templates = repository.getAllIds();
         res.json(templates);
     });
 
