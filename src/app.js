@@ -65,6 +65,10 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(specs, { explorer: true })
 );
+app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(specs);
+});
 
 require('./routes')(app, logger);
 
