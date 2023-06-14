@@ -11,11 +11,12 @@ class QueueService {
         this.queue = [];
     }
 
-    add(templateId, data) {
+    add(templateId, data, context) {
         var item = {
             id: uuid.v4(),
             templateId: templateId,
-            data: data
+            data: data,
+            context: context
         };
         this.queue.push(item);
         return item.id;
@@ -26,7 +27,7 @@ class QueueService {
         if (!item) {
             return undefined;
         }
-        return item.data;
+        return item;
     }
 
     remove(templateId, itemId) {

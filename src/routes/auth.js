@@ -18,16 +18,23 @@ module.exports = function(app, container) {
      *                  type: string
      *                application:
      *                  type: string
+     *                context:
+     *                  type: string
      *     responses:
      *       200:
      *         description: Returns the token.
      */
         app.post('/auth', async (req, res) => {
             try {
-                const token = auth.authenticate(req.body.application, req.body.api_key);
-                res.json({
-                    TokenValue: token
-                });
+                const token = auth.authenticate(req.body.application, req.body.apikey, req.body.context);
+                if (token === undefined) {
+                    res.status(401);
+                    res.end();
+                } else {
+                    res.json({
+                        TokenValue: token
+                    });
+                }
             } catch(error) {
                 logger.error(error);
                 res.status(500);

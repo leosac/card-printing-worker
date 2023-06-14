@@ -9,6 +9,8 @@ module.exports = function(app, container) {
      * /template:
      *   post:
      *     description: Load a new template.
+     *     security:
+     *       - Authorization: []
      *     requestBody:
      *        required: true
      *        content:
@@ -19,7 +21,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the associated template id.
      */
-    app.post('/template', auth.authenticateToken, async (req, res) => {
+    app.post('/template', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             res.json(repository.store(req.body));
         } catch(error) {
@@ -34,6 +36,8 @@ module.exports = function(app, container) {
      * /templates:
      *   get:
      *     description: Get the list of permanent templates on the repository.
+     *     security:
+     *       - Authorization: []
      *     responses:
      *       '200':
      *         description: List of templates
@@ -44,7 +48,7 @@ module.exports = function(app, container) {
      *               items:
      *                 type: string
      */
-    app.get('/templates', auth.authenticateToken, (req, res) => {
+    app.get('/templates', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
         const templates = repository.getAll();
         res.json(templates);
     });
@@ -54,6 +58,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/check:
      *   get:
      *     description: Get if a template exists and is valid.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -65,7 +71,7 @@ module.exports = function(app, container) {
      *       '200':
      *         description: True if the template exists and is valid, false otherwise.
      */
-    app.get('/template/:templateId/check', auth.authenticateToken, (req, res) => {
+    app.get('/template/:templateId/check', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
@@ -84,6 +90,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue:
      *   post:
      *     description: Add a new element to the queue.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -108,7 +116,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the item id on the queue.
      */
-    app.post('/template/:templateId/queue', auth.authenticateToken, async (req, res) => {
+    app.post('/template/:templateId/queue', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
@@ -127,6 +135,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}:
      *   get:
      *     description: Get the item from the queue.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -156,7 +166,10 @@ module.exports = function(app, container) {
             if (item === undefined) {
                 throw new Error("The requested item cannot be found on the queue.");
             }
-            res.json(item);
+            if (!auth.checkQueuePermission(req, item)) {
+                throw new Error("Bad token to access the targeted queue item.");
+            }
+            res.json(item.data);
         } catch(error) {
             logger.error(error);
             res.status(500);
@@ -169,6 +182,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}:
      *   delete:
      *     description: Delete the item from the queue.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -185,7 +200,14 @@ module.exports = function(app, container) {
      */
     app.delete('/template/:templateId/queue/:itemId', auth.authenticateToken, (req, res) => {
         try {
-            queue.remove(req.params.templateId, req.params.itemId);
+            const item = queue.get(req.params.templateId, req.params.itemId);
+            if (item === undefined) {
+                throw new Error("The requested item cannot be found on the queue.");
+            }
+            if (!auth.checkQueuePermission(req, item)) {
+                throw new Error("Bad token to access the targeted queue item.");
+            }
+            queue.remove(item.templateId, item.id);
             res.end();
         } catch(error) {
             logger.error(error);

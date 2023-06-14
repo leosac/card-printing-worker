@@ -70,6 +70,8 @@ module.exports = function(app, container) {
      * /render:
      *   post:
      *     description: Generate an image from a template and associated fields.
+     *     security:
+     *       - Authorization: []
      *     requestBody:
      *        required: true
      *        content:
@@ -93,7 +95,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/render', auth.authenticateToken, async (req, res) => {
+    app.post('/render', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             let tpl;
             if (req.body.template) {
@@ -118,6 +120,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/render:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -142,7 +146,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/template/:templateId/render', auth.authenticateToken, async (req, res) => {
+    app.post('/template/:templateId/render', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
@@ -166,6 +170,8 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}/render:
      *   post:
      *     description: Generate an image from a template loaded from repository and from an item on the queue.
+     *     security:
+     *       - Authorization: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -197,8 +203,14 @@ module.exports = function(app, container) {
             if (!item) {
                 throw new Error("Cannot found the item on the queue.");
             }
+            if (!auth.checkQueuePermission(req, item)) {
+                throw new Error("Bad token to access the targeted queue item.");
+            }
 
-            await generateOutput(cardtpl.layout, tpl, item.data, item.format, res);
+            await generateOutput(cardtpl.layout, tpl, item.data.data, item.data.format, res);
+
+            logger.info("Bitmap generated, removing the item from the queue.");
+            queue.delete(req.params.templateId, req.params.itemId);
         } catch(error) {
             logger.error(error);
             res.status(500);
