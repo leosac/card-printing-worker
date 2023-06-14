@@ -4,8 +4,9 @@ const RepositoryService = require('../src/services/RepositoryService');
 
 describe('Render Endpoint', () => {
     const templates = RepositoryService.getTemplates(process.env.TEMPLATE_REPOSITORY);
-    templates.forEach(tpl => {
-        it('POST /render/image should generate a png | ' + tpl.name, async () => {
+    Object.keys(templates).forEach(tplId => {
+        const tpl = templates[tplId];
+        it('POST /render/image should generate a png | ' + tplId, async () => {
             await supertest(app).post('/render/image')
                 .send({
                     ...tpl,
