@@ -67,7 +67,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /render:
+     * /render/image:
      *   post:
      *     description: Generate an image from a template and associated fields.
      *     security:
@@ -95,7 +95,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/render', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
+    app.post('/render/image', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             let tpl;
             if (req.body.template) {
@@ -117,7 +117,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /template/{templateId}/render:
+     * /template/{templateId}/render/image:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
      *     security:
@@ -146,7 +146,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/template/:templateId/render', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
+    app.post('/template/:templateId/render/image', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
@@ -167,7 +167,7 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /template/{templateId}/queue/{itemId}/render:
+     * /template/{templateId}/queue/{itemId}/render/image:
      *   post:
      *     description: Generate an image from a template loaded from repository and from an item on the queue.
      *     security:
@@ -189,7 +189,7 @@ module.exports = function(app, container) {
      *       200:
      *         description: Returns the image.
      */
-    app.post('/template/:templateId/queue/:itemId/render', auth.authenticateToken, async (req, res) => {
+    app.post('/template/:templateId/queue/:itemId/render/image', auth.authenticateToken, async (req, res) => {
         try {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {

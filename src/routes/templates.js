@@ -87,6 +87,53 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
+     * /template/{templateId}/fields:
+     *   get:
+     *     description: Get list of fields for a template.
+     *     security:
+     *       - Authorization: []
+     *     parameters:
+     *       - in: path
+     *         name: templateId
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The card template id
+     *     responses:
+     *       '200':
+     *         description: The fields list.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   name:
+     *                     type: string
+     *                   type:
+     *                     type: string
+     *                   value:
+     *                     type: [string, integer, boolean]
+     */
+    app.get('/template/:templateId/fields', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
+        try {
+            const fields = repository.getFields(req.params.templateId);
+            if (!fields) {
+                res.status(404);
+                res.end();
+            } else {
+                res.json(fields);
+            }
+        } catch(error) {
+            logger.error(error);
+            res.status(500);
+            res.json(error); 
+        }
+    });
+
+    /**
+     * @openapi
      * /template/{templateId}/queue:
      *   post:
      *     description: Add a new element to the queue.

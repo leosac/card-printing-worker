@@ -7,8 +7,8 @@ class AuthService {
     }
 
     authenticate(application, apikey, context) {
-        if (!process.env.API_KEY || !process.env.SECRET) {
-            throw new Error("Authentication is not enabled. SECRET and API_KEY variables are required.");
+        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
+            throw new Error("Authentication is not enabled. SECRET_KEY and API_KEY variables are required.");
         }
         if (apikey !== process.env.API_KEY) {
             this.logger.error("Authentication failed. Wrong API_KEY.");
@@ -16,20 +16,20 @@ class AuthService {
         }
         return jwt.sign(
             { application: application, context: context },
-            process.env.SECRET,
+            process.env.SECRET_KEY,
             { expiresIn: "1h" }
         );
     }
 
     authenticateToken(req, res, next) {
-        if (!process.env.API_KEY || !process.env.SECRET) {
+        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
             next();
         } else {
             const authHeader = req.headers['authorization']
             const token = authHeader && authHeader.split(' ')[1]
 
             if (token == null) return res.sendStatus(401)
-            jwt.verify(token, process.env.SECRET, (err, client) => {
+            jwt.verify(token, process.env.SECRET_KEY, (err, client) => {
                 if (err) {
                     console.log(err);
                     return res.sendStatus(403);
@@ -41,7 +41,7 @@ class AuthService {
     }
 
     checkGlobalPermission(req, res, next) {
-        if (!process.env.API_KEY || !process.env.SECRET) {
+        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
             next();
         } else {
             // authenticateToken should have been called first
@@ -59,7 +59,7 @@ class AuthService {
     }
 
     checkQueuePermission(req, item) {
-        if (!process.env.API_KEY || !process.env.SECRET) {
+        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
             return true;
         } else {
             // authenticateToken should have been called first

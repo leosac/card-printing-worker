@@ -60,13 +60,41 @@ class RepositoryService {
         return templateId;
     }
 
-    get(name) {
-        if (this.templates && this.templates[name.toLowerCase()] !== undefined) {
-            return this.templates[name.toLowerCase()];
+    get(templateId) {
+        if (this.templates && this.templates[templateId.toLowerCase()] !== undefined) {
+            return this.templates[templateId.toLowerCase()];
         } else {
             this.logger.error("The template list is not initialized or empty.");
             return undefined;
         }
+    }
+
+    getFields(templateId) {
+        const template = this.get(templateId);
+        if (template === null) {
+            return undefined;
+        }
+
+        let fields = [];
+        if (template.sides.front) {
+            fields = fields.concat(this.getFieldsFromCardSide(template.sides.front));
+        }
+        if (template.sides.back) {
+            fields = fields.concat(this.getFieldsFromCardSide(template.sides.back));
+        }
+        return fields;
+    }
+
+    getFieldsFromCardSide(side) {
+        return side.fields.filter(f => f.name !== undefined && f.name !== "").map(f => ({
+            name: f.name,
+            type: this.normalizeWorkerType(f.type),
+            value: f.value
+        }));
+    }
+
+    normalizeWorkerType(type) {
+        return type;
     }
 
     getAll() {

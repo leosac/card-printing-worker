@@ -3,6 +3,9 @@
 FROM node:18-bullseye-slim AS base
 ENV NODE_ENV=production
 ENV TEMPLATE_REPOSITORY=/data/repository
+ENV PORT=4000
+ENV API_KEY=
+ENV SECRET=
 VOLUME $TEMPLATE_REPOSITORY
 WORKDIR /app
 COPY ["package.json", "yarn.lock*", "./"]
@@ -19,5 +22,5 @@ FROM base AS release
 COPY --from=dev /app/node_modules ./node_modules
 COPY --from=dev /app/src ./src
 COPY --from=dev /app/package.json ./
-EXPOSE 4000
+EXPOSE $PORT
 CMD [ "xvfb-run", "--auto-servernum", "node", "src/run.js" ]
