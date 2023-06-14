@@ -598,10 +598,10 @@
   resolved "https://registry.yarnpkg.com/@ladjs/format-util/-/format-util-1.0.4.tgz#dd16ecee7b9d1deb56e1a4968dc5e9ac54499df3"
   integrity sha512-hZere0rUga8kTzSTFbHREXpD9E/jwi94+B5RyLAmMIzl/w/EK1z7rFEnMHzPkU4AZkL42JWSsGXoV8LXMihybg==
 
-"@leosac/cardrendering@^1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@leosac/cardrendering/-/cardrendering-1.5.4.tgz#f3d4f26c2a6bdd12f2dc9f6cba2d18b2800f6d21"
-  integrity sha512-1x4UiZ5jge5WlE2k3U0dTG5sOxxOQ+7IZmx4keujToNvdGNkjFuDlFt9SdiofCdQKAZbuG/8qJ69RXvYDV0vgg==
+"@leosac/cardrendering@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@leosac/cardrendering/-/cardrendering-1.5.5.tgz#30a30d11a41320120ef2175557f644318d42db09"
+  integrity sha512-ZlA5V2hqsjVNsI2TgOWYWfKxco/SKdCKoV1zI+d0u30iI7+UPmGHXY5eSTHyI55MZ5wxe2pKpaYK75t4FSATJw==
   dependencies:
     bwip-js "^3.2.2"
     canvas "^2.11.0"
