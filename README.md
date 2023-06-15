@@ -19,11 +19,11 @@ It can be used as a standalone microservice and is maintained/distributed as a c
  * `docker start leosac-cpw`
 
 # Configuration
-Configuration is done through environment variables. You can use dotenv to create such variables by creating .env file at the root folder. See [.env.example](https://github.com/leosac/card-printing-worker/blob/master/.env.example).
+Configuration is done through environment variables. You can use dotenv to create such variables by creating *.env* file at the root folder. See [.env.example](https://github.com/leosac/card-printing-worker/blob/master/.env.example).
 
 # Use
 By default, the server can be reached on http://localhost:4000/.
-The REST API is documented with an embedded Swagger UI on http://localhost:4000/api-docs/ and also available on SwaggerHub here: https://app.swaggerhub.com/apis/LEOSAC/CardPrintingWorker/1.0.0#/.
+The REST API is documented with an embedded Swagger UI on http://localhost:4000/api-docs/ and also available [on SwaggerHub](https://app.swaggerhub.com/apis/LEOSAC/CardPrintingWorker/1.0.0#/).
 
 JSON template samples can be found on [repository](https://github.com/leosac/card-printing-worker/tree/master/repository) folder.
 Such templates have to follow [js-cardrendering](https://github.com/leosac/js-cardrendering) format and can easily be created with [js-cardeditor](https://github.com/leosac/js-cardeditor).
