@@ -35,6 +35,42 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
+     * /template:
+     *   post:
+     *     description: Load a new template.
+     *     tags:
+     *       - template
+     *     parameters:
+     *       - in: path
+     *         name: templateId
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The card template id
+     *     security:
+     *       - bearerAuth: []
+     *     requestBody:
+     *        required: true
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
+     *     responses:
+     *       200:
+     *         description: Returns the associated template id.
+     */
+    app.post('/template/:templateId', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
+        try {
+            res.json(repository.store(req.body, req.params.templateId));
+        } catch(error) {
+            logger.error(error);
+            res.status(500);
+            res.json(error); 
+        }
+    });
+
+    /**
+     * @openapi
      * /templates:
      *   get:
      *     description: Get the list of permanent templates on the repository.
@@ -82,8 +118,9 @@ module.exports = function(app, container) {
             const cardtpl = repository.get(req.params.templateId);
             if (!cardtpl) {
                 res.json(false);
+            } else {
+                res.json(true);
             }
-            res.json(true);
         } catch(error) {
             logger.error(error);
             res.status(500);

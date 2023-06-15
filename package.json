@@ -37,6 +37,7 @@
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "pdfkit": "^0.13.0",
+    "sanitize-filename": "^1.6.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
     "typedi": "^0.10.0",

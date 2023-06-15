@@ -6,7 +6,7 @@ const RenderService = require('./services/RenderService');
 const Cabin = require('cabin');
 const logger = new Cabin();
 
-const Container = require("typedi").Container;
+const Container = require('typedi').Container;
 
 Container.set('logger', logger);
 Container.set('auth', new AuthService(Container));

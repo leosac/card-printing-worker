@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const uuid = require("uuid");
+var sanitize = require("sanitize-filename");
 
 /**
  * Basic implementation of a repository service.
@@ -46,14 +47,18 @@ class RepositoryService {
         }
     }
 
-    store(template) {
-        const templateId = uuid.v4();
+    store(template, templateId) {
+        if (templateId === undefined) {
+            templateId = uuid.v4();
+        } else {
+            templateId = sanitize(templateId);
+        }
         if (this.folder !== null) {
-            if (fs.existsSync(folder)) {
+            if (fs.existsSync(this.folder)) {
                 const fullfile = path.join(this.folder, templateId + '.json');
-                fs.writeFileSync(fullfile, template);
+                fs.writeFileSync(fullfile, JSON.stringify(template));
             } else {
-                throw new Error("The repository folder `" + folder + "` doesn't exist.");
+                throw new Error("The repository folder `" + this.folder + "` doesn't exist.");
             }
         }
         this.templates.push({ id: templateId.toLowerCase(), content: template});
