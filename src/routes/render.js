@@ -70,8 +70,10 @@ module.exports = function(app, container) {
      * /render/image:
      *   post:
      *     description: Generate an image from a template and associated fields.
+     *     tags:
+     *       - render
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     requestBody:
      *        required: true
      *        content:
@@ -120,8 +122,10 @@ module.exports = function(app, container) {
      * /template/{templateId}/render/image:
      *   post:
      *     description: Generate an image from a template loaded from repository and associated fields.
+     *     tags:
+     *       - render
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -170,8 +174,10 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}/render/image:
      *   post:
      *     description: Generate an image from a template loaded from repository and from an item on the queue.
+     *     tags:
+     *       - render
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId

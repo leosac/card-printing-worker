@@ -7,6 +7,8 @@ module.exports = function(app, container) {
      * /auth:
      *   post:
      *     description: Authenticate.
+     *     tags:
+     *       - authentication
      *     requestBody:
      *        required: true
      *        content:

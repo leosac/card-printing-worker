@@ -9,8 +9,10 @@ module.exports = function(app, container) {
      * /template:
      *   post:
      *     description: Load a new template.
+     *     tags:
+     *       - template
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     requestBody:
      *        required: true
      *        content:
@@ -36,8 +38,10 @@ module.exports = function(app, container) {
      * /templates:
      *   get:
      *     description: Get the list of permanent templates on the repository.
+     *     tags:
+     *       - template
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     responses:
      *       '200':
      *         description: List of templates
@@ -58,8 +62,10 @@ module.exports = function(app, container) {
      * /template/{templateId}/check:
      *   get:
      *     description: Get if a template exists and is valid.
+     *     tags:
+     *       - template
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -90,8 +96,10 @@ module.exports = function(app, container) {
      * /template/{templateId}/fields:
      *   get:
      *     description: Get list of fields for a template.
+     *     tags:
+     *       - template
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -114,7 +122,10 @@ module.exports = function(app, container) {
      *                   type:
      *                     type: string
      *                   value:
-     *                     type: [string, integer, boolean]
+     *                     oneOf:
+     *                       - type: string
+     *                       - type: integer
+     *                       - type: boolean
      */
     app.get('/template/:templateId/fields', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
         try {
@@ -137,8 +148,11 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue:
      *   post:
      *     description: Add a new element to the queue.
+     *     tags:
+     *       - template
+     *       - queue
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -182,8 +196,11 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}:
      *   get:
      *     description: Get the item from the queue.
+     *     tags:
+     *       - template
+     *       - queue
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -229,8 +246,11 @@ module.exports = function(app, container) {
      * /template/{templateId}/queue/{itemId}:
      *   delete:
      *     description: Delete the item from the queue.
+     *     tags:
+     *       - template
+     *       - queue
      *     security:
-     *       - Authorization: []
+     *       - bearerAuth: []
      *     parameters:
      *       - in: path
      *         name: templateId
@@ -244,6 +264,9 @@ module.exports = function(app, container) {
      *           type: string
      *         required: true
      *         description: The item id
+     *     responses:
+     *       '200':
+     *         description: The item was removed
      */
     app.delete('/template/:templateId/queue/:itemId', auth.authenticateToken, (req, res) => {
         try {
