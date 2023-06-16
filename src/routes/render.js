@@ -216,7 +216,7 @@ module.exports = function(app, container) {
             await generateOutput(cardtpl.layout, tpl, item.data.data, item.data.format, res);
 
             logger.info("Bitmap generated, removing the item from the queue.");
-            queue.delete(req.params.templateId, req.params.itemId);
+            queue.remove(req.params.templateId, req.params.itemId);
         } catch(error) {
             logger.error(error);
             res.status(500);

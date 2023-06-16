@@ -25,7 +25,7 @@ module.exports = function(app, container) {
      */
     app.post('/template', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
-            res.json(repository.store(req.body));
+            res.json({id: repository.store(req.body)});
         } catch(error) {
             logger.error(error);
             res.status(500);
@@ -35,9 +35,9 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
-     * /template:
+     * /template/{templateId}:
      *   post:
-     *     description: Load a new template.
+     *     description: Load a new template with expected id, or update an existing one.
      *     tags:
      *       - template
      *     parameters:
@@ -61,7 +61,7 @@ module.exports = function(app, container) {
      */
     app.post('/template/:templateId', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
-            res.json(repository.store(req.body, req.params.templateId));
+            res.json({id: repository.store(req.body, req.params.templateId)});
         } catch(error) {
             logger.error(error);
             res.status(500);
@@ -220,7 +220,7 @@ module.exports = function(app, container) {
             if (!cardtpl) {
                 throw new Error("Cannot found the card template from repository.");
             }
-            res.json(queue.add(req.params.templateId, req.body));
+            res.json({id: queue.add(req.params.templateId, req.body)});
         } catch(error) {
             logger.error(error);
             res.status(500);

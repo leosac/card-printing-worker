@@ -23,11 +23,7 @@ class QueueService {
     }
 
     get(templateId, itemId) {
-        var item = this.queue.find(q => q.templateId == templateId && q.id == itemId);
-        if (!item) {
-            return undefined;
-        }
-        return item;
+        return this.queue.find(q => q.templateId == templateId && q.id == itemId);
     }
 
     remove(templateId, itemId) {

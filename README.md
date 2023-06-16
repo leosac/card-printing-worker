@@ -1,5 +1,5 @@
 # Card Printing Worker [![Build Status](https://github.com/leosac/card-printing-worker/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/leosac/card-printing-worker/actions/workflows/node.js.yml)
-An autonomous (Node.js) server to generate bitmaps for (CR-80) card printing on card printers.
+An autonomous (Node.js) server to generate bitmaps for (CR-80) card printing for card printers.
 
 It can be used as a standalone microservice and is maintained/distributed as a core component of [Leosac Credential Provisioning](https://leosac.com/credential-provisioning/) solution.
 
@@ -20,6 +20,8 @@ It can be used as a standalone microservice and is maintained/distributed as a c
 
 # Configuration
 Configuration is done through environment variables. You can use dotenv to create such variables by creating *.env* file at the root folder. See [.env.example](https://github.com/leosac/card-printing-worker/blob/master/.env.example).
+
+If using docker, define variables when creating the container with `-e VARIABLE=VALUE`.
 
 # Use
 By default, the server can be reached on http://localhost:4000/.
