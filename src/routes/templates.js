@@ -280,6 +280,54 @@ module.exports = function(app, container) {
 
     /**
      * @openapi
+     * /template/{templateId}/layout:
+     *   get:
+     *     description: Get the template layout details.
+     *     tags:
+     *       - template
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: templateId
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The card template id
+     *     responses:
+     *       '200':
+     *         description: The layout
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                orientation:
+     *                  type: string
+     *                  enum: ['portrait', 'landscape']
+     *                  default: 'landscape'
+     *                size:
+     *                  type: string
+     *                  enum: ['cr80', 'cr79', 'cr100']
+     *                  default: 'cr80'
+     */
+    app.get('/template/:templateId/layout', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
+        try {
+            const tpl = repository.get(req.params.templateId);
+            if (tpl === undefined) {
+                res.status(404);
+            } else {
+                res.json(tpl.layout);
+            }
+        } catch(error) {
+            logger.error(error);
+            res.status(500);
+            res.json(error); 
+        }
+    });
+
+    /**
+     * @openapi
      * /template/{templateId}/queue/{itemId}:
      *   delete:
      *     description: Delete the item from the queue.
