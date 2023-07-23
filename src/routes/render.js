@@ -3,6 +3,7 @@ const PDFDocument = require('pdfkit');
 module.exports = function(app, container) {
     const logger = container.get('logger');
     const auth = container.get('auth');
+    const integrity = container.get('integrity');
     const repository = container.get('repository');
     const queue = container.get('queue');
 
@@ -89,6 +90,8 @@ module.exports = function(app, container) {
      *                  $ref: '#/components/schemas/SideTemplate'
      *                data:
      *                  type: object
+     *                signature:
+     *                  type: string
      *                format:
      *                  type: string
      *                  enum: ['png', 'pdf']
@@ -107,6 +110,10 @@ module.exports = function(app, container) {
             }
             if (!tpl) {
                 throw new Error("No card side template to use.");
+            }
+
+            if (!integrity.check(req.body.data, req.body.signature)) {
+                throw new Error("Wrong data signature.");
             }
 
             await generateOutput(req.body.layout, tpl, req.body.data, req.body.format, res);
@@ -142,6 +149,8 @@ module.exports = function(app, container) {
      *              properties:
      *                data:
      *                  type: object
+     *                signature:
+     *                  type: string
      *                format:
      *                  type: string
      *                  enum: ['png', 'pdf']
@@ -159,6 +168,10 @@ module.exports = function(app, container) {
             const tpl = getCardSideTemplate(req, cardtpl.sides);
             if (!tpl) {
                 throw new Error("No card side template to use.");
+            }
+
+            if (!integrity.check(req.body.data, req.body.signature)) {
+                throw new Error("Wrong data signature.");
             }
 
             await generateOutput(cardtpl.layout, tpl, req.body.data, req.body.format, res);

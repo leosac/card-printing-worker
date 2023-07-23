@@ -1,6 +1,7 @@
 module.exports = function(app, container) {
     const logger = container.get('logger');
     const auth = container.get('auth');
+    const integrity = container.get('integrity');
     const repository = container.get('repository');
     const queue = container.get('queue');
 
@@ -220,6 +221,11 @@ module.exports = function(app, container) {
             if (!cardtpl) {
                 throw new Error("Cannot found the card template from repository.");
             }
+            
+            if (!integrity.check(req.body.data, req.body.signature)) {
+                throw new Error("Wrong data signature.");
+            }
+            
             res.json({id: queue.add(req.params.templateId, req.body)});
         } catch(error) {
             logger.error(error);

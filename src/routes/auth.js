@@ -34,7 +34,7 @@ module.exports = function(app, container) {
                     res.end();
                 } else {
                     res.json({
-                        TokenValue: token
+                        tokenValue: token
                     });
                 }
             } catch(error) {
