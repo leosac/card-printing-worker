@@ -10,14 +10,14 @@ class DataIntegrityService {
         if (!process.env.DATA_INTEGRITY_ENABLED) {
             return true;
         }
-        if (!signature) {
+        if (!signature || !process.env.DATA_INTEGRITY_KEY) {
             return false;
         }
         
-        return crypto.verify("SHA256", this.prepareData(data), process.env.DATA_INTEGRITY_KEY, signature);
+        return crypto.verify("SHA256", this.flatData(data), process.env.DATA_INTEGRITY_KEY, Buffer.from(signature, "hex"));
     }
 
-    prepareData(data) {
+    flatData(data) {
         return JSON.stringify(data, Object.keys(data).sort());
     }
 }
