@@ -276,7 +276,7 @@ module.exports = function(app, container) {
             if (!auth.checkQueuePermission(req, item)) {
                 throw new Error("Bad token to access the targeted queue item.");
             }
-            res.json(item.data);
+            res.json(item.credential);
         } catch(error) {
             logger.error(error);
             res.status(500);

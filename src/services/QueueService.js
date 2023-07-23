@@ -11,11 +11,11 @@ class QueueService {
         this.queue = [];
     }
 
-    add(templateId, data, context) {
+    add(templateId, credential, context) {
         var item = {
             id: uuid.v4(),
             templateId: templateId,
-            data: data,
+            credential: credential,
             context: context
         };
         this.queue.push(item);

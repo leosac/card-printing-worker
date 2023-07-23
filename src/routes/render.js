@@ -226,7 +226,7 @@ module.exports = function(app, container) {
                 throw new Error("Bad token to access the targeted queue item.");
             }
 
-            await generateOutput(cardtpl.layout, tpl, item.data.data, item.data.format, res);
+            await generateOutput(cardtpl.layout, tpl, item.credential.data, item.credential.format, res);
 
             logger.info("Bitmap generated, removing the item from the queue.");
             queue.remove(req.params.templateId, req.params.itemId);
