@@ -16,7 +16,8 @@ class QueueService {
             id: uuid.v4(),
             templateId: templateId,
             credential: credential,
-            context: context
+            context: context,
+            removing: false
         };
         this.queue.push(item);
         return item.id;
@@ -24,6 +25,14 @@ class QueueService {
 
     get(templateId, itemId) {
         return this.queue.find(q => q.templateId == templateId && q.id == itemId);
+    }
+
+    scheduleRemove(templateId, itemId, timeout) {
+        var item = this.get(templateId, itemId);
+        item.removing = true;
+        setTimeout(() => {
+            this.remove(templateId, itemId);
+        }, timeout);
     }
 
     remove(templateId, itemId) {

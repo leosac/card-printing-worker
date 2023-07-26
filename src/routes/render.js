@@ -228,8 +228,8 @@ module.exports = function(app, container) {
 
             await generateOutput(cardtpl.layout, tpl, item.credential.data, item.credential.format, res);
 
-            logger.info("Bitmap generated, removing the item from the queue.");
-            queue.remove(req.params.templateId, req.params.itemId);
+            logger.info("Bitmap generated, schedule removing the item from the queue.");
+            queue.scheduleRemove(req.params.templateId, req.params.itemId, 30000);
         } catch(error) {
             logger.error(error);
             res.status(500);
