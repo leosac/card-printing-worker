@@ -225,6 +225,9 @@ module.exports = function(app, container) {
             if (!auth.checkQueuePermission(req, item)) {
                 throw new Error("Bad token to access the targeted queue item.");
             }
+            if (item.removing) {
+                throw new Error("The item is marked as `removing` and then cannot be produced anymore.");
+            }
 
             await generateOutput(cardtpl.layout, tpl, item.credential.data, item.credential.format, res);
 
