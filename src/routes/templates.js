@@ -110,13 +110,19 @@ module.exports = function(app, container) {
      *           type: string
      *         required: true
      *         description: The card template id
+     *       - in: path
+     *         name: revision
+     *         schema:
+     *           type: integer
+     *         required: false
+     *         description: The template revision (latest timestamp update for now)
      *     responses:
      *       '200':
      *         description: True if the template exists and is valid, false otherwise.
      */
     app.get('/template/:templateId/check', auth.authenticateToken, auth.checkGlobalPermission, (req, res) => {
         try {
-            const cardtpl = repository.get(req.params.templateId);
+            const cardtpl = repository.get(req.params.templateId, req.query.revision);
             if (!cardtpl) {
                 res.json(false);
             } else {

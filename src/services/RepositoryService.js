@@ -26,7 +26,12 @@ class RepositoryService {
                     const fullfile = path.join(folder, file);
                     const json = fs.readFileSync(fullfile, { encoding: 'utf8' });
                     const tpl = JSON.parse(json);
-                    templates.push({ id: fpath.name.toLowerCase(), content: tpl });
+                    let revision = undefined;
+                    const stats = fs.statSync(fullfile);
+                    if (stats.mtime) {
+                        revision = stats.mtime.getTime();
+                    }
+                    templates.push({ id: fpath.name.toLowerCase(), revision: revision, content: tpl });
                 }
             });
         } else {
@@ -61,15 +66,17 @@ class RepositoryService {
                 throw new Error("The repository folder `" + this.folder + "` doesn't exist.");
             }
         }
-        this.templates.push({ id: templateId.toLowerCase(), content: template});
+        this.templates.push({ id: templateId.toLowerCase(), revision: new Date().getTime(), content: template});
         return templateId;
     }
 
-    get(templateId) {
+    get(templateId, revision = undefined) {
         if (this.templates && this.templates.length > 0) {
             const tpl = this.templates.find(t => t.id == templateId.toLowerCase());
             if (tpl !== undefined) {
-                return tpl.content;
+                if (revision == undefined || tpl.revision >= revision) {
+                    return tpl.content;
+                }
             }
         } else {
             this.logger.error("The template list is not initialized or empty.");
