@@ -13,7 +13,7 @@ const logger = new Cabin();
 
 app.use(morgan('tiny'));
 app.use(cors({ origin: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '5mb' }));
 app.use(logger.middleware);
 
 global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
