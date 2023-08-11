@@ -27,7 +27,7 @@ const swaggerOptions = {
         openapi: "3.0.0",
         info: {
             title: "Leosac Card Printing Worker API",
-            version: "0.1.0",
+            version: "1.1.0",
             description: "Leosac Card Printing API to generate bitmaps for further card printing.",
             license: {
                 name: "AGPL",
