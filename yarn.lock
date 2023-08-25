@@ -591,10 +591,10 @@
   resolved "https://registry.yarnpkg.com/@ladjs/format-util/-/format-util-1.0.4.tgz#dd16ecee7b9d1deb56e1a4968dc5e9ac54499df3"
   integrity sha512-hZere0rUga8kTzSTFbHREXpD9E/jwi94+B5RyLAmMIzl/w/EK1z7rFEnMHzPkU4AZkL42JWSsGXoV8LXMihybg==
 
-"@leosac/cardrendering@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@leosac/cardrendering/-/cardrendering-1.6.0.tgz#4c1b1cab45024315ef3ef113f47f592dfcb0992d"
-  integrity sha512-E3U5iZ7JulE6SGZ92Ab+tpS8KPQpDJsqZoQ46InIjrBFf1Uig0H9G6xmzwFKTERgQObuPbYNul6472Hi3Ua/Eg==
+"@leosac/cardrendering@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@leosac/cardrendering/-/cardrendering-1.6.2.tgz#8c92f64d635fccc05b839b2057892b18dd4e375b"
+  integrity sha512-MlKWJN46sFA412fmH7/i0U6w7ilRGUraxt6nGPXwczqm744nI23i56DE4SwS7qcPCiW0u7z3OcAJntstoGotXA==
   dependencies:
     bwip-js "^3.2.2"
     canvas "^2.11.0"
@@ -5007,6 +5007,7 @@ wide-align@^1.1.2, wide-align@^1.1.5:
     string-width "^1.0.2 || 2 || 3 || 4"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
