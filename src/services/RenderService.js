@@ -36,6 +36,7 @@ class RenderService {
               ruler: false
             }
         });
+        cr.data.card.border = 0;
         if (!layout) {
             layout = {
                 size: 'cr80',
