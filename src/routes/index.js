@@ -1,6 +1,6 @@
-const Container = require('../container');
-
 module.exports = function(app, logger) {
+    const Container = require('../container')(logger);
+    
     /**
      * @openapi
      * /:

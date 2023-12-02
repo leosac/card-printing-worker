@@ -31,7 +31,7 @@ class AuthService {
             if (token == null) return res.sendStatus(401)
             jwt.verify(token, process.env.SECRET_KEY, (err, client) => {
                 if (err) {
-                    console.log(err);
+                    this.logger.error(err);
                     return res.sendStatus(403);
                 }
                 req.client = client;

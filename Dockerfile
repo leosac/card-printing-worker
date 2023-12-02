@@ -6,7 +6,13 @@ ENV TEMPLATE_REPOSITORY=/data/repository
 ENV PORT=4000
 ENV API_KEY=
 ENV SECRET=
+ENV LOGGING_TYPE=console
+ENV LOGGING_LEVEL=http
+ENV LOGGING_DIRECTORY=/data/logs
+
 VOLUME $TEMPLATE_REPOSITORY
+VOLUME $LOGGING_DIRECTORY
+
 WORKDIR /app
 COPY ["package.json", "yarn.lock*", "./"]
 RUN apt update && apt install -y \

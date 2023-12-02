@@ -4,17 +4,45 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const Cabin = require('cabin');
+const winston = require('winston');
 const path = require('path');
 const canvas = require('canvas');
 
 const app = express();
-const logger = new Cabin();
 
-app.use(morgan('tiny'));
+if (!process.env.LOGGING_LEVEL) {
+    process.env.LOGGING_LEVEL = "http";
+}
+const logger = winston.createLogger({
+    level: process.env.LOGGING_LEVEL
+});
+const lineformat = winston.format.printf(({ level, message, timestamp }) => {
+    return `${timestamp} ${level}: ${message}`;
+});
+const logformat = winston.format.combine(
+    winston.format.timestamp(),
+    lineformat
+);
+if (process.env.LOGGING_TYPE === "file") {
+    if (!process.env.LOGGING_DIRECTORY) {
+        process.env.LOGGING_DIRECTORY = ".";
+    }
+    logger.add(new winston.transports.File({
+        format: logformat,
+        filename: process.env.LOGGING_DIRECTORY + '/leosac-cpw.log'
+    }));
+} else {
+    logger.add(new winston.transports.Console({
+        format: logformat
+    }));
+}
+const logHttp = {
+    write: (message) => logger.http(message)
+};
+
+app.use(morgan('tiny', { stream: logHttp }));
 app.use(cors({ origin: true }));
 app.use(bodyParser.json({ limit: '5mb' }));
-app.use(logger.middleware);
 
 global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
 
