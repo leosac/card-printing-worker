@@ -15,7 +15,8 @@ It can be used as a standalone microservice and is maintained/distributed as a c
 ## With Docker
  * Install [Docker](https://docs.docker.com/engine/install/)
  * `docker pull leosac/leosac-card-printing-worker:snapshot`
- * `docker create --name leosac-cpw --init -p 4000:4000 -v /var/local/lcpw-repo:/data/repository leosac/leosac-card-printing-worker:snapshot`
+ * `docker create --name leosac-cpw --init -p 4000:4000 -v /var/local/lcpw/repo:/data/repository leosac/leosac-card-printing-worker:snapshot`
+ * To log traces into a file instead of the console output, add the following parameters to the previous docker create command: `-v /var/local/lcpw/logs:/data/logs -e LOGGING_TYPE=file -e LOGGING_LEVEL=http`
  * `docker start leosac-cpw`
 
 # Configuration
