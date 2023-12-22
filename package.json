@@ -5,7 +5,8 @@
   "main": "src/run.js",
   "scripts": {
     "test": "jest --testTimeout=10000 --forceExit",
-    "dev": "nodemon src/run.js"
+    "dev": "nodemon src/run.js",
+    "build": "pkg -c package.json -t node16-win --out-path dist src/run.js"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
-    "pdfkit": "^0.13.0",
+    "pdfkit": "^0.14.0",
     "sanitize-filename": "^1.6.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
@@ -45,6 +46,10 @@
   "devDependencies": {
     "jest": "^29.5.0",
     "nodemon": "^2.0.20",
+    "pkg": "^5.8.1",
     "supertest": "^6.3.3"
+  },
+  "pkg": {
+    "assets": ["node_modules/canvas/**/*", "node_modules/es-get-iterator/**/*"]
   }
 }
