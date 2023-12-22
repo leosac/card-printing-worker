@@ -49,6 +49,7 @@
     "pkg": "^5.8.1",
     "supertest": "^6.3.3"
   },
+  "bundleDependencies": true,
   "pkg": {
     "assets": ["node_modules/canvas/**/*", "node_modules/es-get-iterator/**/*"]
   }
