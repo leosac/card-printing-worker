@@ -4,3 +4,4 @@
 /.env
 /repository
 /installer/output
+/installer/directory.wxs
