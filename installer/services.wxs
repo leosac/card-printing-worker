@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Fragment>
+  
+    <CustomAction
+      Id='RegisterService'
+      Impersonate="no"
+      Execute="deferred" 
+      FileKey='nssm'
+      ExeCommand='install !(loc.ServiceName) "[INSTALLDIR]node.exe" src/run.js'
+      Return='asyncWait' />
+
+    <CustomAction
+      Id='SetPort'
+      Impersonate="no"
+      Execute="deferred" 
+      FileKey='nssm'
+      ExeCommand='set !(loc.ServiceName) AppEnvironmentExtra PORT=[PORT]'
+      Return='asyncWait' />
+
+    <CustomAction
+      Id='SetServiceDisplayName'
+      Impersonate="no"
+      Execute="deferred" 
+      FileKey='nssm'
+      ExeCommand='set !(loc.ServiceName) DisplayName "!(loc.ApplicationName) Service"'
+      Return='asyncWait' />
+
+    <CustomAction
+      Id='SetServiceDescription'
+      Impersonate="no"
+      Execute="deferred" 
+      FileKey='nssm'
+      ExeCommand='set !(loc.ServiceName) Description !(loc.Description)'
+      Return='asyncWait' />
+
+  </Fragment>
+</Wix>

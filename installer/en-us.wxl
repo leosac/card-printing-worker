@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" 
+  xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="ApplicationName">Leosac Credential Provisioning Printing Worker</String>
+  <String Id="ServiceName">Leosac.PrintingWorker</String>
+  <String Id="ManufacturerName">Leosac</String>
+  <String Id="Description">The background service for Leosac Credential Provisioning Encoding Worker.</String>
+  <String Id="PortDlgTitle">{\WixUI_Font_Title}Listening Port</String>
+  <String Id="PortDlgDescription">Leave the default port or set a custom value.</String>
+  <String Id="PortDlgText">The port can be set to a value between 0 and 65535. If you change the default port it is recommended to use a value not below 1024.</String>
+  <String Id="PortWarnDlgTitle">Port Warning</String>
+  <String Id="PortWarnDlgText">Port [PORT] is already being used by [PORT_BUSY].</String>
+  <String Id="AboutURL">https://www.leosac.com</String>
+  <String Id="SupportURL">https://www.leosac.com</String>
+  <String Id="UpdatesURL">https://www.leosac.com</String>
+</WixLocalization>
