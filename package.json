@@ -1,6 +1,6 @@
 {
   "name": "card-printing-worker",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Printing Worker for Leosac Credential Provisioning solution",
   "main": "src/run.js",
   "scripts": {

@@ -27,9 +27,17 @@
   <xsl:key name="installerDir" match="wix:Directory[@Name = 'installer']" use="@Id" />
   <xsl:key name="installerRef" match="wix:Component[ancestor::wix:Directory[@Name = 'installer']]" use="@Id" />
   
-    <!-- find repository directory -->
+  <!-- find repository directory -->
   <xsl:key name="repositoryDir" match="wix:Directory[@Name = 'repository']" use="@Id" />
   <xsl:key name="repositoryRef" match="wix:Component[ancestor::wix:Directory[@Name = 'repository']]" use="@Id" />
+  
+  <!-- find .github directory -->
+  <xsl:key name="githubDir" match="wix:Directory[@Name = '.github']" use="@Id" />
+  <xsl:key name="githubRef" match="wix:Component[ancestor::wix:Directory[@Name = '.github']]" use="@Id" />
+  
+  <!-- find .yarn directory -->
+  <xsl:key name="yarnDir" match="wix:Directory[@Name = '.yarn']" use="@Id" />
+  <xsl:key name="yarnRef" match="wix:Component[ancestor::wix:Directory[@Name = '.yarn']]" use="@Id" />
 
   <!-- By default, copy all elements and nodes into the output... -->
   <xsl:template match="@*|node()">
@@ -55,5 +63,11 @@
   
   <xsl:template match="*[ self::wix:Directory ][ key( 'repositoryDir', @Id ) ]" />
   <xsl:template match="wix:ComponentRef[key('repositoryRef', @Id)]" />
+  
+  <xsl:template match="*[ self::wix:Directory ][ key( 'githubDir', @Id ) ]" />
+  <xsl:template match="wix:ComponentRef[key('githubRef', @Id)]" />
+  
+  <xsl:template match="*[ self::wix:Directory ][ key( 'yarnDir', @Id ) ]" />
+  <xsl:template match="wix:ComponentRef[key('yarnRef', @Id)]" />
 
 </xsl:stylesheet>
