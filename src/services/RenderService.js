@@ -45,7 +45,9 @@ class RenderService {
         }
 
         await cr.createCardStage(layout, sidetpl);
-        await cr.setCardData(data);
+        if (data !== undefined) {
+            await cr.setCardData(data);
+        }
         cr.animate();
 
         const base64img = app.renderer.extract.canvas(app.stage).toDataURL('image/png');
