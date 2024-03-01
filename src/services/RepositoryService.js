@@ -43,6 +43,7 @@ class RepositoryService {
     load() {
         try {
             if (this.folder !== undefined) {
+                this.logger.info("Loading template from repository folder `"+ this.folder +"`...");
                 this.templates = RepositoryService.getTemplates(this.folder);
             } else {
                 this.templates = [];
@@ -58,7 +59,7 @@ class RepositoryService {
         } else {
             templateId = sanitize(templateId);
         }
-        if (this.folder !== null) {
+        if (this.folder !== undefined) {
             if (fs.existsSync(this.folder)) {
                 const fullfile = path.join(this.folder, templateId + '.json');
                 fs.writeFileSync(fullfile, JSON.stringify(template));

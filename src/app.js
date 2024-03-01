@@ -5,7 +5,6 @@ const morgan = require('morgan');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const winston = require('winston');
-const path = require('path');
 const canvas = require('canvas');
 
 const app = express();
@@ -47,7 +46,7 @@ app.use(bodyParser.json({ limit: '5mb' }));
 global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
 
 if (!process.env.TEMPLATE_REPOSITORY) {
-    process.env.TEMPLATE_REPOSITORY = path.join(__dirname, '../repository');
+    logger.warn("The environment variable `TEMPLATE_REPOSITORY` is not defined. Templates caching/storage will not be persistent.");
 }
 
 const swaggerOptions = {
@@ -69,6 +68,10 @@ const swaggerOptions = {
         },
         servers: [
             {
+                url: "/",
+                description: "Current Server"
+            },
+            {
                 url: "http://localhost:4000/",
                 description: "Development Server"
             }
@@ -88,7 +91,7 @@ const swaggerOptions = {
   
 const specs = swaggerJsdoc(swaggerOptions);
 app.use(
-    "/api-docs",
+    "/swagger",
     swaggerUi.serve,
     swaggerUi.setup(specs, { explorer: true })
 );
