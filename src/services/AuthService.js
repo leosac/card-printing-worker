@@ -1,3 +1,4 @@
+const fs = require('fs');
 const jwt = require("jsonwebtoken");
 
 class AuthService {
@@ -6,30 +7,59 @@ class AuthService {
         this.logger = container.get('logger');
     }
 
+    static apikey = undefined;
+    static secretkey = undefined;
+
+    isJWTSetup() {
+        const isSetup = !((!process.env.API_KEY && !process.env.API_KEY_FILE) || (!process.env.SECRET_KEY && !process.env.SECRET_KEY_FILE));
+        if (isSetup) {
+            AuthService.cacheSecrets();
+        }
+        return isSetup;
+    }
+
+    static cacheSecrets() {
+        if (!AuthService.apikey) {
+            if (process.env.API_KEY) {
+                AuthService.apikey = process.env.API_KEY;
+            } else if (process.env.API_KEY_FILE) {
+                AuthService.apikey = fs.readFileSync(process.env.API_KEY_FILE, { encoding: 'utf8' });
+            }
+        }
+        if (!AuthService.secretkey) {
+            if (process.env.SECRET_KEY) {
+                AuthService.secretkey = process.env.SECRET_KEY;
+            } else if (process.env.SECRET_KEY_FILE) {
+                AuthService.secretkey = fs.readFileSync(process.env.SECRET_KEY_FILE, { encoding: 'utf8' });
+            }
+        }
+    }
+
     authenticate(application, apikey, context) {
-        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
+        if (!this.isJWTSetup()) {
+            this.logger.error("Authentication is not enabled. SECRET_KEY and API_KEY variables are required.");
             throw new Error("Authentication is not enabled. SECRET_KEY and API_KEY variables are required.");
         }
-        if (apikey !== process.env.API_KEY) {
+        if (apikey !== AuthService.apikey) {
             this.logger.error("Authentication failed. Wrong API_KEY.");
             return undefined;
         }
         return jwt.sign(
             { application: application, context: context },
-            process.env.SECRET_KEY,
+            AuthService.secretkey,
             { expiresIn: "1h" }
         );
     }
 
     authenticateToken(req, res, next) {
-        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
+        if (this.isJWTSetup()) {
             next();
         } else {
             const authHeader = req.headers['authorization']
             const token = authHeader && authHeader.split(' ')[1]
 
             if (token == null) return res.sendStatus(401)
-            jwt.verify(token, process.env.SECRET_KEY, (err, client) => {
+            jwt.verify(token, AuthService.secretkey, (err, client) => {
                 if (err) {
                     this.logger.error(err);
                     return res.sendStatus(403);
@@ -41,7 +71,7 @@ class AuthService {
     }
 
     checkGlobalPermission(req, res, next) {
-        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
+        if (!this.isJWTSetup()) {
             next();
         } else {
             // authenticateToken should have been called first
@@ -59,7 +89,7 @@ class AuthService {
     }
 
     checkQueuePermission(req, item) {
-        if (!process.env.API_KEY || !process.env.SECRET_KEY) {
+        if (!this.isJWTSetup()) {
             return true;
         } else {
             // authenticateToken should have been called first
