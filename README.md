@@ -1,5 +1,5 @@
 # Card Printing Worker [![Build Status](https://github.com/leosac/card-printing-worker/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/leosac/card-printing-worker/actions/workflows/node.js.yml)
-An autonomous (Node.js) server to generate bitmaps for (CR-80) card printing for card printers.
+An autonomous (Node.js) server to generate bitmaps for cards (CR-80 and others), usually for card printers.
 
 It can be used as a standalone microservice and is maintained/distributed as a core component of [Leosac Credential Provisioning](https://leosac.com/credential-provisioning/) solution.
 
@@ -18,6 +18,10 @@ It can be used as a standalone microservice and is maintained/distributed as a c
  * `docker create --name leosac-cpw --init -p 4000:4000 -v /var/local/lcpw/repo:/data/repository leosac/leosac-card-printing-worker:snapshot`
  * To log traces into a file instead of the console output, add the following parameters to the previous docker create command: `-v /var/local/lcpw/logs:/data/logs -e LOGGING_TYPE=file -e LOGGING_LEVEL=http`
  * `docker start leosac-cpw`
+
+## Using MSI package (Windows only)
+ * Install latest MSI package
+ * Start Leosac.PrintingWorker service (Leosac Credential Provisioning Printing Worker Service)
 
 # Configuration
 Configuration is done through environment variables. You can use dotenv to create such variables by creating *.env* file at the root folder. See [.env.example](https://github.com/leosac/card-printing-worker/blob/master/.env.example).
