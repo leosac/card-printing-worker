@@ -20,6 +20,14 @@
       Return='asyncWait' />
 
     <CustomAction
+      Id='SetRepository'
+      Impersonate="no"
+      Execute="deferred" 
+      FileKey='nssm'
+      ExeCommand='set !(loc.ServiceName) AppEnvironmentExtra TEMPLATE_REPOSITORY=[RepositoryFolder]'
+      Return='asyncWait' />
+
+    <CustomAction
       Id='SetServiceDisplayName'
       Impersonate="no"
       Execute="deferred" 

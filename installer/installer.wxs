@@ -31,6 +31,7 @@
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='MyCompany_Folder' Name="!(loc.ManufacturerName)">
           <Directory Id='INSTALLDIR' Name="!(loc.ApplicationName)">
+            <Directory Id='RepositoryFolder' Name='repository' />
           </Directory>
         </Directory>
       </Directory>
@@ -45,7 +46,8 @@
     <InstallExecuteSequence>
       <Custom Action='RegisterService' Before='StartServices'>NOT Installed</Custom>
       <Custom Action='SetPort' After='RegisterService'>NOT Installed</Custom>
-	  <Custom Action='SetServiceDisplayName' After='SetPort'>NOT Installed</Custom>
+	  <Custom Action='SetRepository' After='SetPort'>NOT Installed</Custom>
+	  <Custom Action='SetServiceDisplayName' After='SetRepository'>NOT Installed</Custom>
       <Custom Action='SetServiceDescription' After='SetServiceDisplayName'>NOT Installed</Custom>
       <Custom Action="LaunchBrowser" OnExit="success">NOT Installed</Custom>
     </InstallExecuteSequence>
@@ -56,10 +58,13 @@
       <Component Id="node_component" Guid="{AAAAAAAA-C0C2-4D3F-BC22-EC7AE4963FFF}" Directory="INSTALLDIR">
         <File Id="node" KeyPath="yes" Source="C:\Program Files\nodejs\node.exe" />
       </Component>
+	  
+	  <Component Id="repository_component" Guid="{B203E622-13F9-4EB2-891B-171592EA9281}" Directory="RepositoryFolder">
+        <File Id="keep" KeyPath="yes" Source="..\repository\.keep" />
+      </Component>
 
       <Component Id="nssm_component" Guid="{AAAAAAAA-CBB2-4F3F-BC22-EC7AE4963FFF}" Directory="INSTALLDIR">
         <File Id="nssm" KeyPath="yes" Source=".\binaries\nssm.exe" />
-
         <ServiceControl Id="ControlMyProductService" Name="!(loc.ServiceName)" Remove="uninstall" Start="install" Stop="both" />
       </Component>
 
