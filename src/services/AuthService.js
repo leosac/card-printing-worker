@@ -10,7 +10,7 @@ class AuthService {
     static apikey = undefined;
     static secretkey = undefined;
 
-    isJWTSetup() {
+    static isJWTSetup() {
         const isSetup = !((!process.env.API_KEY && !process.env.API_KEY_FILE) || (!process.env.SECRET_KEY && !process.env.SECRET_KEY_FILE));
         if (isSetup) {
             AuthService.cacheSecrets();
@@ -36,7 +36,7 @@ class AuthService {
     }
 
     authenticate(application, apikey, context) {
-        if (!this.isJWTSetup()) {
+        if (!AuthService.isJWTSetup()) {
             this.logger.error("Authentication is not enabled. SECRET_KEY and API_KEY variables are required.");
             throw new Error("Authentication is not enabled. SECRET_KEY and API_KEY variables are required.");
         }
@@ -52,7 +52,7 @@ class AuthService {
     }
 
     authenticateToken(req, res, next) {
-        if (this.isJWTSetup()) {
+        if (!AuthService.isJWTSetup()) {
             next();
         } else {
             const authHeader = req.headers['authorization']
@@ -71,7 +71,7 @@ class AuthService {
     }
 
     checkGlobalPermission(req, res, next) {
-        if (!this.isJWTSetup()) {
+        if (!AuthService.isJWTSetup()) {
             next();
         } else {
             // authenticateToken should have been called first
@@ -89,7 +89,7 @@ class AuthService {
     }
 
     checkQueuePermission(req, item) {
-        if (!this.isJWTSetup()) {
+        if (!AuthService.isJWTSetup()) {
             return true;
         } else {
             // authenticateToken should have been called first
