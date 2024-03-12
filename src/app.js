@@ -15,6 +15,9 @@ if (!process.env.LOGGING_LEVEL) {
 const logger = winston.createLogger({
     level: process.env.LOGGING_LEVEL
 });
+if (!process.env.LOGGING_TYPE) {
+    process.env.LOGGING_TYPE = "console";
+}
 const lineformat = winston.format.printf(({ level, message, timestamp }) => {
     return `${timestamp} ${level}: ${message}`;
 });
@@ -22,19 +25,21 @@ const logformat = winston.format.combine(
     winston.format.timestamp(),
     lineformat
 );
-if (process.env.LOGGING_TYPE === "file") {
-    if (!process.env.LOGGING_DIRECTORY) {
-        process.env.LOGGING_DIRECTORY = ".";
+process.env.LOGGING_TYPE.split(',').forEach(logtype => {
+    if (logtype === "file") {
+        if (!process.env.LOGGING_DIRECTORY) {
+            process.env.LOGGING_DIRECTORY = ".";
+        }
+        logger.add(new winston.transports.File({
+            format: logformat,
+            filename: process.env.LOGGING_DIRECTORY + '/leosac-cpw.log'
+        }));
+    } else if (logtype === "console") {
+        logger.add(new winston.transports.Console({
+            format: logformat
+        }));
     }
-    logger.add(new winston.transports.File({
-        format: logformat,
-        filename: process.env.LOGGING_DIRECTORY + '/leosac-cpw.log'
-    }));
-} else {
-    logger.add(new winston.transports.Console({
-        format: logformat
-    }));
-}
+});
 const logHttp = {
     write: (message) => logger.http(message)
 };

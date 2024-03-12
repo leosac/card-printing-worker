@@ -3,6 +3,7 @@
 FROM node:18-bullseye-slim AS base
 ENV NODE_ENV=production
 ENV TEMPLATE_REPOSITORY=/data/repository
+ENV HOSTNAME=127.0.0.1
 ENV PORT=4000
 ENV API_KEY=
 ENV API_KEY_FILE=
