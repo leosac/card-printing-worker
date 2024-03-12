@@ -44,6 +44,13 @@ class AuthService {
             this.logger.error("Authentication failed. Wrong API_KEY.");
             return undefined;
         }
+
+        if (context === "") {
+            context = null;
+        }
+
+        this.logger.info(`Authentication succeeded (context: ${context}).`);
+
         return jwt.sign(
             { application: application, context: context },
             AuthService.secretkey,
@@ -60,9 +67,8 @@ class AuthService {
 
             if (token == null) return res.sendStatus(401)
             jwt.verify(token, AuthService.secretkey, (err, client) => {
-                if (err) {
-                    this.logger.error(err);
-                    return res.sendStatus(403);
+                if (err || client == null) {
+                    return res.sendStatus(401);
                 }
                 req.client = client;
                 next();
@@ -74,13 +80,14 @@ class AuthService {
         if (!AuthService.isJWTSetup()) {
             next();
         } else {
-            // authenticateToken should have been called first
             if (!req.client) {
-                return res.sendStatus(403);
+                //this.logger.error("authenticateToken should have been called first");
+                return res.sendStatus(401);
             }
             // If a context is assigned to the token, then the token can only be used
             // for actions on the associated queue items.
-            if (req.client.context !== undefined) {
+            if (req.client.context != null) {
+                //this.logger.error(`A context (${req.client.context}) is assigned to the client, global API calls with this token are forbidden.`);
                 return res.sendStatus(403);
             }
 
@@ -96,7 +103,7 @@ class AuthService {
             if (!req.client) {
                 return false;
             }
-            return (req.client.context === undefined || item.context === req.client.context);
+            return (req.client.context == null || item.context === req.client.context);
         }
     }
 }

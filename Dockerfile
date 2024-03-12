@@ -3,7 +3,7 @@
 FROM node:18-bullseye-slim AS base
 ENV NODE_ENV=production
 ENV TEMPLATE_REPOSITORY=/data/repository
-ENV HOSTNAME=127.0.0.1
+ENV HOSTNAME=0.0.0.0
 ENV PORT=4000
 ENV API_KEY=
 ENV API_KEY_FILE=
@@ -32,4 +32,4 @@ COPY --from=dev /app/node_modules ./node_modules
 COPY --from=dev /app/src ./src
 COPY --from=dev /app/package.json ./
 EXPOSE $PORT
-CMD [ "xvfb-run", "--auto-servernum", "node", "src/run.js" ]
+ENTRYPOINT [ "xvfb-run", "--auto-servernum", "node", "src/run.js" ]
