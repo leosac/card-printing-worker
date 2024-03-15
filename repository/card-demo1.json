@@ -13,7 +13,7 @@
           "ecLevel": "M",
           "width": 100,
           "height": 100,
-          "color": 0,
+          "color": "#000000",
           "x": 310,
           "y": 19,
           "zIndex": 0,
@@ -23,7 +23,7 @@
         {
           "useMacros": false,
           "value": "www.leosac.com",
-          "color": 0,
+          "color": "#000000",
           "colorFill": -1,
           "fontFamily": "Verdana",
           "fontSize": "12pt",
@@ -41,14 +41,14 @@
           "rotation": 0,
           "border": {
             "width": 0,
-            "color": 0
+            "color": "#000000"
           },
           "type": "label"
         },
         {
           "useMacros": false,
           "value": "John",
-          "color": 0,
+          "color": "#000000",
           "colorFill": -1,
           "fontFamily": "Verdana",
           "fontSize": "14pt",
@@ -66,7 +66,7 @@
           "rotation": 0,
           "border": {
             "width": 0,
-            "color": 0
+            "color": "#000000"
           },
           "type": "label",
           "name": "Firstname"
@@ -74,7 +74,7 @@
         {
           "useMacros": false,
           "value": "Doe",
-          "color": 0,
+          "color": "#000000",
           "colorFill": -1,
           "fontFamily": "Verdana",
           "fontSize": "14pt",
@@ -92,7 +92,7 @@
           "rotation": 0,
           "border": {
             "width": 0,
-            "color": 0
+            "color": "#000000"
           },
           "type": "label",
           "name": "Lastname"
@@ -134,7 +134,7 @@
           "rotation": 0,
           "border": {
             "width": 0,
-            "color": 0
+            "color": "#000000"
           },
           "type": "label"
         }
