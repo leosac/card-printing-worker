@@ -28,7 +28,11 @@ class RenderService {
     async generateImage(layout, sidetpl, data) {
         this.logger.info("Generating image...");
 
-        const app = new PIXI.Application();
+        const app = new PIXI.Application({
+            antialias: true,
+            autoDensity: true,
+            resolution: 1
+        });
         const cr = new CardRenderer({
             renderer: app.renderer,
             stage: app.stage,
@@ -49,8 +53,14 @@ class RenderService {
             await cr.setCardData(data);
         }
         cr.animate();
-
+        
         const base64img = app.renderer.extract.canvas(app.stage).toDataURL('image/png');
+
+        app.stop();
+        cr.graphics.renderer = undefined; // to avoid rendering on animate function
+        cr.graphics.card = undefined;
+        app.destroy(true, { children: true, texture: false, baseTexture: false });
+
         return this.dataURItoBlob(base64img);
     }
 }
