@@ -63,6 +63,7 @@ class RenderService {
         container.addChild(app.stage);
         var canvas = app.renderer.extract.canvas(container);
         const base64img = canvas.toDataURL('image/png');
+        container.destroy();
 
         app.stop();
         cr.graphics.renderer = undefined; // to avoid rendering on animate function
