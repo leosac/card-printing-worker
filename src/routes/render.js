@@ -39,8 +39,8 @@ module.exports = function(app, container) {
      *        type: object
      */
 
-    async function generateOutput(layout, tpl, data, format, res) {
-        const img = await container.get('render').generateImage(layout, tpl, data);
+    async function generateOutput(layout, tpl, data, format, dpi, res) {
+        const img = await container.get('render').generateImage(layout, tpl, data, dpi);
             if (format === 'pdf') {
                 const doc = new PDFDocument({autoFirstPage:false});
                 res.setHeader('Content-disposition', 'attachment; filename="cardtemplate.pdf"')
@@ -96,6 +96,9 @@ module.exports = function(app, container) {
      *                  type: string
      *                  enum: ['png', 'pdf']
      *                  default: 'png'
+     *                dpi:
+     *                  type: number
+     *                  default: 300
      *     responses:
      *       200:
      *         description: Returns the image.
@@ -116,7 +119,7 @@ module.exports = function(app, container) {
                 throw new Error("Wrong data signature.");
             }
 
-            await generateOutput(req.body.layout, tpl, req.body.data, req.body.format, res);
+            await generateOutput(req.body.layout, tpl, req.body.data, req.body.format, req.body.dpi, res);
         } catch(error) {
             logger.error(error);
             res.status(500);
@@ -155,6 +158,9 @@ module.exports = function(app, container) {
      *                  type: string
      *                  enum: ['png', 'pdf']
      *                  default: 'png'
+     *                dpi:
+     *                  type: number
+     *                  default: 300
      *     responses:
      *       200:
      *         description: Returns the image.
@@ -174,7 +180,7 @@ module.exports = function(app, container) {
                 throw new Error("Wrong data signature.");
             }
 
-            await generateOutput(cardtpl.layout, tpl, req.body.data, req.body.format, res);
+            await generateOutput(cardtpl.layout, tpl, req.body.data, req.body.format, req.body.dpi, res);
         } catch(error) {
             logger.error(error);
             res.status(500);
@@ -229,7 +235,7 @@ module.exports = function(app, container) {
                 throw new Error("The item is marked as `removing` and then cannot be produced anymore.");
             }
 
-            await generateOutput(cardtpl.layout, tpl, item.credential.data, item.credential.format, res);
+            await generateOutput(cardtpl.layout, tpl, item.credential.data, item.credential.format, item.credential.dpi, res);
 
             logger.info("Bitmap generated, schedule removing the item from the queue.");
             queue.scheduleRemove(req.params.templateId, req.params.itemId, 30000);

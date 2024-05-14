@@ -16,18 +16,29 @@ class RenderService {
         return Buffer.from(new Uint8Array(array));
     }
 
-    async generateImages(tpl, data) {
+    async generateImages(tpl, data, dpi = undefined) {
         const images = [];
         await Promise.all(Object.keys(tpl.sides).map(async side => {
-            const image = await this.generateImage(tpl.layout, tpl.sides[side], data);
+            const image = await this.generateImage(tpl.layout, tpl.sides[side], data, dpi);
             images.push(image);
         }));
         return images;
     }
 
-    async generateImage(layout, sidetpl, data) {
+    async generateImage(layout, sidetpl, data, dpi = undefined) {
         this.logger.info("Generating image...");
 
+        let originDpi = 96 * 1.373;
+        if (!layout) {
+            layout = {
+                size: 'cr80',
+                orientation: 'landscape'
+            };
+        }
+        if (layout.dpi !== undefined) {
+            originDpi = layout.dpi
+        }
+        const scale = (dpi !== undefined) ? (dpi / originDpi) : 1;
         const app = new PIXI.Application({
             antialias: true,
             autoDensity: true,
@@ -37,24 +48,21 @@ class RenderService {
             renderer: app.renderer,
             stage: app.stage,
             grid: {
-              ruler: false
+              ruler: false,
+              scale: scale
             }
         });
         cr.data.card.border = 0;
-        if (!layout) {
-            layout = {
-                size: 'cr80',
-                orientation: 'landscape'
-            };
-        }
 
         await cr.createCardStage(layout, sidetpl);
         if (data !== undefined) {
             await cr.setCardData(data);
         }
         cr.animate();
-        
-        const base64img = app.renderer.extract.canvas(app.stage).toDataURL('image/png');
+        let container = new PIXI.Container();
+        container.addChild(app.stage);
+        var canvas = app.renderer.extract.canvas(container);
+        const base64img = canvas.toDataURL('image/png');
 
         app.stop();
         cr.graphics.renderer = undefined; // to avoid rendering on animate function
