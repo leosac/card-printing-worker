@@ -54,6 +54,10 @@ if (!process.env.TEMPLATE_REPOSITORY) {
     logger.warn("The environment variable `TEMPLATE_REPOSITORY` is not defined. Templates caching/storage will not be persistent.");
 }
 
+if (!process.env.PIXI_APP_POOL_SIZE) {
+    process.env.PIXI_APP_POOL_SIZE = 10;
+}
+
 const swaggerOptions = {
     definition: {
         openapi: "3.0.0",

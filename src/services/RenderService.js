@@ -1,10 +1,32 @@
 const PIXI = require('@pixi/node');
 const CardRenderer = require('@leosac/cardrendering').CardRenderer;
+const genericPool = require("generic-pool");
 
 class RenderService {
+
+    app = null;
+    pixiPool = null;
+
     constructor(container) {
         this.container = container;
         this.logger = container.get('logger');
+
+        const poolFactory = {
+            create: function() {
+                return new PIXI.Application({
+                    antialias: true,
+                    autoDensity: true,
+                    resolution: 1
+                });
+            },
+            destroy: function(app) {
+                app.destroy(true, true);
+            }
+        };
+        
+
+        this.logger.info("Initializing PIXI.JS pool with a pool size of `"+ process.env.PIXI_APP_POOL_SIZE +"`.");
+        this.pixiPool = genericPool.createPool(poolFactory, { min: process.env.PIXI_APP_POOL_SIZE, max: process.env.PIXI_APP_POOL_SIZE });
     }
 
     dataURItoBlob(dataURI) {
@@ -39,11 +61,8 @@ class RenderService {
             originDpi = layout.dpi
         }
         const scale = (dpi !== undefined) ? (dpi / originDpi) : 1;
-        const app = new PIXI.Application({
-            antialias: true,
-            autoDensity: true,
-            resolution: 1
-        });
+        const app = await this.pixiPool.acquire();
+        app.start();
         const cr = new CardRenderer({
             renderer: app.renderer,
             stage: app.stage,
@@ -58,17 +77,24 @@ class RenderService {
         if (data !== undefined) {
             await cr.setCardData(data);
         }
-        cr.animate();
-        let container = new PIXI.Container();
+        cr.animateOnce();
+        const container = new PIXI.Container();
         container.addChild(app.stage);
         var canvas = app.renderer.extract.canvas(container);
         const base64img = canvas.toDataURL('image/png');
-        container.destroy();
 
         app.stop();
-        cr.graphics.renderer = undefined; // to avoid rendering on animate function
-        cr.graphics.card = undefined;
-        app.destroy(true, { children: true, texture: false, baseTexture: false });
+        container.destroy(false);
+        cr.destroy({ children: true, texture: true, baseTexture: true });
+        PIXI.Cache.reset();
+        this.pixiPool.release(app);
+        /*if ('gl' in app.renderer) {
+            console.log('webgl loseContext');
+            app.renderer.gl?.getExtension('WEBGL_lose_context')?.loseContext();
+        }*/
+        //app.destroy(true, true); app = null;
+        //PIXI.utils.destroyTextureCache();
+        //PIXI.utils.clearTextureCache();
 
         return this.dataURItoBlob(base64img);
     }
