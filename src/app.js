@@ -55,7 +55,7 @@ if (!process.env.TEMPLATE_REPOSITORY) {
 }
 
 if (!process.env.PIXI_APP_POOL_SIZE) {
-    process.env.PIXI_APP_POOL_SIZE = 10;
+    process.env.PIXI_APP_POOL_SIZE = 5;
 }
 
 const swaggerOptions = {
