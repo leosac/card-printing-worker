@@ -35,4 +35,4 @@ COPY --from=dev /app/node_modules ./node_modules
 COPY --from=dev /app/src ./src
 COPY --from=dev /app/package.json ./
 EXPOSE $PORT
-ENTRYPOINT [ "xvfb-run", "--auto-servernum", "node", "src/run.js" ]
+ENTRYPOINT [ "xvfb-run", "--auto-servernum", "-s", "-noreset", "node", "src/run.js" ]

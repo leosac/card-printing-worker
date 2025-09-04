@@ -772,9 +772,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@leosac/cardrendering@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "@leosac/cardrendering@npm:1.9.0"
+"@leosac/cardrendering@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "@leosac/cardrendering@npm:1.9.2"
   dependencies:
     bwip-js: "npm:^3.2.2"
     canvas: "npm:^2.11.0"
@@ -782,7 +782,7 @@ __metadata:
   peerDependencies:
     "@pixi/node": ^7.1.3
     pixi.js: ^7.1.3
-  checksum: 10c0/da50b914b089dd8f7587f8aa9c5303a65d3e0c3081852caa33d6baab2b1e92714fc7c33180e7f0ceae73261d9739fecaf4e19e36606e4bd72aeea6a3a03b2da3
+  checksum: 10c0/9a18208d5c050865d68ad331681987e841e4fcd7e487071399f5bde116daee9d093ca7ced02c3a496a5b0c563b6ba62e9ad3225f18d722880cc0221a8d8182b5
   languageName: node
   linkType: hard
 
@@ -1959,7 +1959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "card-printing-worker@workspace:."
   dependencies:
-    "@leosac/cardrendering": "npm:^1.9.0"
+    "@leosac/cardrendering": "npm:^1.9.2"
     "@pixi/node": "npm:7.1.3"
     body-parser: "npm:^1.20.2"
     canvas: "npm:^2.11.0"

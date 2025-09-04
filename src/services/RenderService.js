@@ -86,7 +86,7 @@ class RenderService {
         app.stop();
         container.destroy(false);
         cr.destroy({ children: true, texture: true, baseTexture: true });
-        PIXI.Cache.reset();
+        //PIXI.Cache.reset();
         this.pixiPool.release(app);
         /*if ('gl' in app.renderer) {
             console.log('webgl loseContext');
