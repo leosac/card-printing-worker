@@ -16,7 +16,8 @@ class RenderService {
                 return new PIXI.Application({
                     antialias: true,
                     autoDensity: true,
-                    resolution: 1
+                    resolution: 1,
+                    autoStart: false
                 });
             },
             destroy: function(app) {
