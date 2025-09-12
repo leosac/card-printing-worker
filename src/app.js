@@ -50,6 +50,8 @@ app.use(bodyParser.json({ limit: '5mb' }));
 
 global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
 
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Arial-Bold.ttf'), { family: 'Arial', weight: 'bold' });
+
 if (!process.env.TEMPLATE_REPOSITORY) {
     logger.warn("The environment variable `TEMPLATE_REPOSITORY` is not defined. Templates caching/storage will not be persistent.");
 }
