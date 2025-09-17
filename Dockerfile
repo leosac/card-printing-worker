@@ -33,6 +33,7 @@ RUN yarn install
 FROM base AS release
 COPY --from=dev /app/node_modules ./node_modules
 COPY --from=dev /app/src ./src
+COPY --from=dev /app/fonts ./fonts
 COPY --from=dev /app/package.json ./
 EXPOSE $PORT
 ENTRYPOINT [ "xvfb-run", "--auto-servernum", "-s", "-noreset", "node", "src/run.js" ]
