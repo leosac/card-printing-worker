@@ -17,7 +17,7 @@ class RepositoryService {
     }
 
     static getTemplates(folder) {
-        const templates = [];
+        const templates = new Map();
         if (fs.existsSync(folder)) {
             const files = fs.readdirSync(folder);
             files.forEach(file => {
@@ -31,7 +31,7 @@ class RepositoryService {
                     if (stats.mtime) {
                         revision = stats.mtime.getTime() / 1000;
                     }
-                    templates.push({ id: fpath.name.toLowerCase(), revision: revision, content: tpl });
+                    templates.set(fpath.name.toLowerCase(), { revision: revision, content: tpl });
                 }
             });
         } else {
@@ -46,7 +46,7 @@ class RepositoryService {
                 this.logger.info("Loading template from repository folder `"+ this.folder +"`...");
                 this.templates = RepositoryService.getTemplates(this.folder);
             } else {
-                this.templates = [];
+                this.templates = new Map();
             }
         } catch(error) {
             this.logger.error(error);
@@ -70,20 +70,20 @@ class RepositoryService {
         if (revision == undefined) {
             revision = new Date().getTime() / 1000;
         }
-        this.templates.push({ id: templateId.toLowerCase(), revision: revision, content: template});
+        this.templates.set(templateId.toLowerCase(), {revision: revision, content: template});
         return templateId;
     }
 
     get(templateId, revision = undefined) {
-        if (this.templates && this.templates.length > 0) {
-            const tpl = this.templates.find(t => t.id == templateId.toLowerCase());
+        if (this.templates) {
+            const tpl = this.templates.get(templateId.toLowerCase());
             if (tpl !== undefined) {
                 if (revision == undefined || tpl.revision >= revision) {
                     return tpl.content;
                 }
             }
         } else {
-            this.logger.error("The template list is not initialized or empty.");
+            this.logger.error("The template list is not initialized.");
         }
 
         return undefined;
@@ -118,7 +118,7 @@ class RepositoryService {
     }
 
     getAllIds() {
-        return this.templates.map(t => t.id);
+        return Array.from(this.templates.keys());
     }
 }
 
