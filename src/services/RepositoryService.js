@@ -53,7 +53,7 @@ class RepositoryService {
         }
     }
 
-    store(template, templateId) {
+    store(template, templateId, revision = undefined) {
         if (templateId === undefined) {
             templateId = uuid.v4();
         } else {
@@ -67,7 +67,10 @@ class RepositoryService {
                 throw new Error("The repository folder `" + this.folder + "` doesn't exist.");
             }
         }
-        this.templates.push({ id: templateId.toLowerCase(), revision: new Date().getTime(), content: template});
+        if (revision == undefined) {
+            revision = new Date().getTime() / 1000;
+        }
+        this.templates.push({ id: templateId.toLowerCase(), revision: revision, content: template});
         return templateId;
     }
 

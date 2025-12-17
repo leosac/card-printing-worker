@@ -62,7 +62,7 @@ module.exports = function(app, container) {
      */
     app.post('/template/:templateId', auth.authenticateToken, auth.checkGlobalPermission, async (req, res) => {
         try {
-            res.json({id: repository.store(req.body, req.params.templateId)});
+            res.json({id: repository.store(req.body, req.params.templateId, req.query.revision)});
         } catch(error) {
             logger.error(error);
             res.status(500);
