@@ -29,7 +29,7 @@ class RepositoryService {
                     let revision = undefined;
                     const stats = fs.statSync(fullfile);
                     if (stats.mtime) {
-                        revision = stats.mtime.getTime();
+                        revision = stats.mtime.getTime() / 1000;
                     }
                     templates.push({ id: fpath.name.toLowerCase(), revision: revision, content: tpl });
                 }
