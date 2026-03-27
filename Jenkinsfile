@@ -3,7 +3,7 @@ pipeline {
 	stages {
 	    stage('Build') {
             steps {
-                nodejs(nodeJSInstallationName: 'node24') {
+                nodejs(nodeJSInstallationName: 'node18') {
                     sh 'corepack enable'
 					sh 'yarn install'
 					sh 'xvfb-run --auto-servernum yarn test'
