@@ -50,7 +50,34 @@ app.use(bodyParser.json({ limit: '5mb' }));
 
 global.ImageData = canvas.ImageData; // Required since PIXI 7.2.x and Canvas update, temporary workaround (?). Not required if PIXI peer dependency <= 7.1.
 
-canvas.registerFont(require('path').resolve(__dirname, '../fonts/Arial-Bold.ttf'), { family: 'Arial', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Arial.ttf'), { family: 'Arial' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/ArialBd.ttf'), { family: 'Arial', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/ArialBdIt.ttf'), { family: 'Arial', weight: 'bold', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/ArialIt.ttf'), { family: 'Arial', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/ComicSansMS.ttf'), { family: 'Comic Sans MS' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/ComicSansMSBd.ttf'), { family: 'Comic Sans MS', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/CourierNew.ttf'), { family: 'Courier New' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Georgia.ttf'), { family: 'Georgia' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/GeorgiaBd.ttf'), { family: 'Georgia', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/GeorgiaBdIt.ttf'), { family: 'Georgia', weight: 'bold', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/GeorgiaIt.ttf'), { family: 'Georgia', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Helvetica.ttf'), { family: 'Helvetica' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/HelveticaBd.ttf'), { family: 'Helvetica', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/LucidaSansUnicode.ttf'), { family: 'Lucida Sans Unicode' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Tahoma.ttf'), { family: 'Tahoma' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TahomaBd.ttf'), { family: 'Tahoma', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TimesNewRoman.ttf'), { family: 'Times New Roman' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TimesNewRomanBd.ttf'), { family: 'Times New Roman', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TimesNewRomanBdIt.ttf'), { family: 'Times New Roman', weight: 'bold', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TimesNewRomanIt.ttf'), { family: 'Times New Roman', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TrebuchetMS.ttf'), { family: 'Trebuchet MS' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TrebuchetMSBd.ttf'), { family: 'Trebuchet MS', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TrebuchetMSBdIt.ttf'), { family: 'Trebuchet MS', weight: 'bold', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/TrebuchetMSIt.ttf'), { family: 'Trebuchet MS', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/Verdana.ttf'), { family: 'Verdana' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/VerdanaBd.ttf'), { family: 'Verdana', weight: 'bold' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/VerdanaBdIt.ttf'), { family: 'Verdana', weight: 'bold', style: 'italic' });
+canvas.registerFont(require('path').resolve(__dirname, '../fonts/VerdanaIt.ttf'), { family: 'Verdana', style: 'italic' });
 
 if (!process.env.TEMPLATE_REPOSITORY) {
     logger.warn("The environment variable `TEMPLATE_REPOSITORY` is not defined. Templates caching/storage will not be persistent.");
