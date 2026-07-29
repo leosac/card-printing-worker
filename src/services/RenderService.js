@@ -12,13 +12,15 @@ class RenderService {
         this.logger = container.get('logger');
 
         const poolFactory = {
-            create: function() {
-                return new PIXI.Application({
+            create: async function() {
+                const app = new PIXI.Application();
+                await app.init({
                     antialias: true,
                     autoDensity: true,
                     resolution: 1,
                     autoStart: false
                 });
+                return app;
             },
             destroy: function(app) {
                 app.destroy(true, true);
@@ -73,11 +75,12 @@ class RenderService {
             }
         });
         cr.data.card.border = 0;
-
+        
         await cr.createCardStage(layout, sidetpl);
         if (data !== undefined) {
             await cr.setCardData(data);
         }
+        console.log("e");
         cr.animateOnce();
         const container = new PIXI.Container();
         container.addChild(app.stage);

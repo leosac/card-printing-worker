@@ -14,9 +14,10 @@ It can be used as a standalone microservice and is maintained/distributed as a c
 
 ## With Docker
  * Install [Docker](https://docs.docker.com/engine/install/)
- * `docker pull leosac/leosac-card-printing-worker:snapshot`
- * `docker create --name leosac-cpw --init -p 4000:4000 -v /var/local/lcpw/repo:/data/repository leosac/leosac-card-printing-worker:snapshot`
- * To log traces into a file instead of the console output, add the following parameters to the previous docker create command: `-v /var/local/lcpw/logs:/data/logs -e LOGGING_TYPE=file -e LOGGING_LEVEL=http`
+ * `docker pull leosac/leosac-card-printing-worker:latest`
+ * `mkdir /var/local/cpw`
+ * `docker create --name leosac-cpw --init -p 4000:4000 -v /var/local/cpw/repo:/data/repository leosac/leosac-card-printing-worker:latest`
+ * To log traces into a file instead of the console output, add the following parameters to the previous docker create command: `-v /var/local/cpw/logs:/data/logs -e LOGGING_TYPE=file -e LOGGING_LEVEL=http`
  * `docker start leosac-cpw`
 
 ## Using MSI package (Windows only)
@@ -27,6 +28,9 @@ It can be used as a standalone microservice and is maintained/distributed as a c
 Configuration is done through environment variables. You can use dotenv to create such variables by creating *.env* file at the root folder. See [.env.example](https://github.com/leosac/card-printing-worker/blob/master/.env.example).
 
 If using docker, define variables when creating the container with `-e VARIABLE=VALUE`.
+
+ * **SECRET**: secret key for JWT token generation. If defined, API_KEY is also required and authentication mandatory for API calls.
+ * **API_KEY**: API key used for authentication to get a valid JWT token for further API calls.
 
 # Use
 By default, the server can be reached on http://localhost:4000/.
