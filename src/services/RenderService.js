@@ -80,7 +80,6 @@ class RenderService {
         if (data !== undefined) {
             await cr.setCardData(data);
         }
-        console.log("e");
         cr.animateOnce();
         const container = new PIXI.Container();
         container.addChild(app.stage);

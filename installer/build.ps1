@@ -30,11 +30,10 @@ else {
 }
 
 # generate the installer
-$wix_dir="c:\Program Files (x86)\WiX Toolset v3.14\bin"
+$wix_dir="C:\Program Files\WiX Toolset v6.0\bin"
 
-. "$wix_dir\heat.exe" dir $source_dir -srd -dr INSTALLDIR -cg MainComponentGroup -out directory.wxs -ke -sfrag -gg -var var.SourceDir -sreg -scom -t exclude_files.xslt
-. "$wix_dir\candle.exe" -dSourceDir="$source_dir" *.wxs -o output\ -ext WiXUtilExtension -dPKGVERSION_NUMBER="$pkgversion" -dGUID="$guid"
-. "$wix_dir\light.exe" -o output\installer.msi output\*.wixobj -cultures:en-us -loc en-us.wxl -ext WixUIExtension.dll -ext WiXUtilExtension
+. "$wix_dir\x64\heat.exe" dir $source_dir -srd -dr INSTALLDIR -cg MainComponentGroup -out directory.wxs -ke -sfrag -gg -var var.SourceDir -sreg -scom -t exclude_files.xslt
+. "$wix_dir\wix.exe" build -d SourceDir="$source_dir" -ext WixToolset.Util.wixext -ext WixToolset.UI.wixext -d PKGVERSION_NUMBER="$pkgversion" -d GUID="$guid" -loc en-us.wxl -o output\installer.msi *.wxs
 
 # optional digital sign the certificate. 
 # you have to previously import it.

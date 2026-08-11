@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
-  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" 
+  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <Product Id="*" UpgradeCode="$(var.GUID)" Language='1033' Codepage='1252' Version='$(var.PKGVERSION_NUMBER)' Name="!(loc.ApplicationName)" Manufacturer="!(loc.ManufacturerName)">
-
-    <Package Id='*' Keywords='Installer' Description="!(loc.Description)" Manufacturer="!(loc.ManufacturerName)" InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+  <Package UpgradeCode="$(var.GUID)" Language='1033' Codepage='1252' Version='$(var.PKGVERSION_NUMBER)' Name="!(loc.ApplicationName)" Manufacturer="!(loc.ManufacturerName)" InstallerVersion="200">
 
     <Media Id='1' EmbedCab='yes' Cabinet="main.cab" />
 
@@ -27,32 +26,27 @@
     <!-- if you delete the next line the installer will choose the drive with the most available free space as root drive -->
     <Property Id="ROOTDRIVE" Value="C:\"/>
 
-    <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id='ProgramFilesFolder' Name='PFiles'>
-        <Directory Id='MyCompany_Folder' Name="!(loc.ManufacturerName)">
-          <Directory Id='INSTALLDIR' Name="!(loc.ApplicationName)">
-            <Directory Id='RepositoryFolder' Name='repository' />
-          </Directory>
+    <StandardDirectory Id='ProgramFiles6432Folder'>
+      <Directory Id='MyCompany_Folder' Name="!(loc.ManufacturerName)">
+        <Directory Id='INSTALLDIR' Name="!(loc.ApplicationName)">
+          <Directory Id='RepositoryFolder' Name='repository' />
         </Directory>
       </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="!(loc.ApplicationName)"/>
-      </Directory>
-    </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="!(loc.ApplicationName)"/>
+    </StandardDirectory>
 
-    <CustomAction Id="LaunchBrowser" ExeCommand="explorer.exe &quot;http://localhost:[PORT]&quot;" Directory="INSTALLDIR" Return="asyncNoWait">
-    </CustomAction>
+    <CustomAction Id="LaunchBrowser" ExeCommand="explorer.exe &quot;http://localhost:4000&quot;" Directory="INSTALLDIR" Return="asyncNoWait" />
 
     <InstallExecuteSequence>
-      <Custom Action='RegisterService' Before='StartServices'>NOT Installed</Custom>
-      <Custom Action='SetPort' After='RegisterService'>NOT Installed</Custom>
-	  <Custom Action='SetRepository' After='SetPort'>NOT Installed</Custom>
-	  <Custom Action='SetServiceDisplayName' After='SetRepository'>NOT Installed</Custom>
-      <Custom Action='SetServiceDescription' After='SetServiceDisplayName'>NOT Installed</Custom>
-      <Custom Action="LaunchBrowser" OnExit="success">NOT Installed</Custom>
+      <Custom Action='RegisterService' Before='StartServices' Condition='NOT Installed' />
+	  <Custom Action='SetServiceDisplayName' After='RegisterService' Condition='NOT Installed' />
+      <Custom Action='SetServiceDescription' After='SetServiceDisplayName' Condition='NOT Installed' />
+      <Custom Action='LaunchBrowser' OnExit='success' Condition='NOT Installed' />
     </InstallExecuteSequence>
 
-    <Feature Id='Complete' Level='1'>
+    <Feature Id='Complete' Description="!(loc.Description)" Level='1'>
       <ComponentGroupRef Id='MainComponentGroup' />
       <ComponentRef Id="ApplicationShortcut" />
       <Component Id="node_component" Guid="{AAAAAAAA-C0C2-4D3F-BC22-EC7AE4963FFF}" Directory="INSTALLDIR">
@@ -67,13 +61,11 @@
         <File Id="nssm" KeyPath="yes" Source=".\binaries\nssm.exe" />
         <ServiceControl Id="ControlMyProductService" Name="!(loc.ServiceName)" Remove="uninstall" Start="install" Stop="both" />
       </Component>
-
     </Feature>
 
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-    <Property Id="PORT" Value="4000" />
+    <UI>
+		<ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLDIR" />
+	</UI>
 
-    <UIRef Id="WixUI" />
-
-  </Product>
+  </Package>
 </Wix>
