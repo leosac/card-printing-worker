@@ -76,6 +76,7 @@ class RenderService {
         });
         cr.data.card.border = 0;
         
+        try {
         await cr.createCardStage(layout, sidetpl);
         if (data !== undefined) {
             await cr.setCardData(data);
@@ -100,6 +101,10 @@ class RenderService {
         //PIXI.utils.clearTextureCache();
 
         return this.dataURItoBlob(base64img);
+        } catch (error) {
+            this.logger.error("Error generating image: " + error.message);
+            throw error;
+        }
     }
 }
 
